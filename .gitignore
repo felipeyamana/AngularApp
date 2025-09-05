@@ -57,3 +57,4 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+src/AngularApp/appsettings.json
