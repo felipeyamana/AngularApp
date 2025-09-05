@@ -29,8 +29,7 @@ project.fragment.lock.json
 artifacts/
 
 # Ignore only sensitive configs
-appsettings.Production.json
-appsettings.Staging.json
+appsettings.Development.json
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
