@@ -1,3 +1,6 @@
+using Application;
+using Infrastructure;
+
 namespace AngularApp
 {
     public class Program
@@ -6,8 +9,13 @@ namespace AngularApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
+            builder.Services.AddAuthentication(builder.Configuration);
 
             var app = builder.Build();
 
@@ -22,6 +30,7 @@ namespace AngularApp
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -29,6 +38,8 @@ namespace AngularApp
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            app.MapRazorPages();
 
             app.Run();
         }

@@ -1,0 +1,32 @@
+﻿using Application.Common.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace Application
+{
+    public static class DependencyInjection
+    {
+        /// <summary>
+        /// Registers application-layer services (CQRS handlers, validators, etc.).
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The updated service collection.</returns>
+        public static IServiceCollection AddApplication(this IServiceCollection services)
+        {
+            services.Scan(scan => scan
+                .FromAssemblies(Assembly.GetExecutingAssembly())
+                .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+                .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+                .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime()
+            );
+
+            return services;
+        }
+    }
+}
