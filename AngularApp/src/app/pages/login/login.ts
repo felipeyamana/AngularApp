@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { UserService } from '../../services/user.service';
@@ -13,19 +13,25 @@ import { UserService } from '../../services/user.service';
   templateUrl: 'login.html',
   styleUrl: 'login.scss'
 })
-export class Login {
+export class Login implements OnInit {
   email: string = '';
   password: string = '';
   successMessage: string = '';
   errorMessage: string = '';
+  private returnUrl: string = '/dashboard'; // default fallback
 
   private apiUrl = `${environment.apiUrl}/auth/login`;
 
   constructor(
     private http: HttpClient,
     private router: Router,
+    private route: ActivatedRoute,
     private userService: UserService
   ) {}
+
+  ngOnInit(): void {
+    console.log('something on init');
+  }
 
   onSubmit(): void {
     this.errorMessage = '';
@@ -47,7 +53,8 @@ export class Login {
 
         this.userService.loadCurrentUser().subscribe({
           next: () => {
-            this.router.navigate(['/dashboard']); // static redirect to dashboard after storing user
+            // redirect to intended page after login
+            this.router.navigate([this.returnUrl]);
           }
         });
       },
