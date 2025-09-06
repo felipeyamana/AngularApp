@@ -34,5 +34,29 @@ namespace AngularApp
 
             return services;
         }
+
+        public static IServiceCollection AddCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                // dev
+                options.AddPolicy("AllowAngularDev", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+
+                // production, domain doesnt exist yet
+                options.AddPolicy("AllowAngularProd", policy =>
+                {
+                    policy.WithOrigins("https://myapp.com")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
+            return services;
+        }
     }
 }

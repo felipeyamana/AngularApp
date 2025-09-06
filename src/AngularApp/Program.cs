@@ -16,8 +16,19 @@ namespace AngularApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddAuthentication(builder.Configuration);
+            builder.Services.AddCors();
 
             var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseCors("AllowAngularDev");
+            }
+            else
+            {
+                app.UseStaticFiles();
+                app.MapFallbackToFile("index.html");
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

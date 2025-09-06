@@ -6,6 +6,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+	<Target Name="PublishAngular" BeforeTargets="Publish">
+		<Exec Command="npm install" WorkingDirectory="../../AngularApp" />
+		<Exec Command="npm run build -- --configuration production" WorkingDirectory="../../AngularApp" />
+
+		<!-- Copy Angular dist output to wwwroot -->
+		<RemoveDir Directories="wwwroot" />
+		<MakeDir Directories="wwwroot" />
+		<Copy SourceFiles="@(AngularDistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" />
+	</Target>
+
+    <ItemGroup>
+	    <!-- Grab all files from Angular's browser build -->
+	    <AngularDistFiles Include="../../AngularApp/dist/angularapp/browser/**" />
+    </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
