@@ -1,4 +1,6 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Dispatchers.Implementations;
+using Application.Common.Dispatchers.Interfaces;
+using Application.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -13,6 +15,11 @@ namespace Application
         /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            // add dispatchers
+            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+
+            // add CQRS handlers
             services.Scan(scan => scan
                 .FromAssemblies(Assembly.GetExecutingAssembly())
                 .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))

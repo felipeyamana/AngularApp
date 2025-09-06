@@ -26,7 +26,7 @@ namespace Application.Users.Queries.UserLogin
             _configuration = configuration;
         }
 
-        public async Task<Result<string>> Handle(UserLoginRequest request)
+        public async Task<Result<string>> Handle(UserLoginRequest request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)

@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Dispatchers.Interfaces;
+using Application.Common.Interfaces;
 using Application.Common.Results;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Queries.UserLogin;
@@ -11,22 +12,22 @@ namespace AngularApp.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ICommandHandler<RegisterUserRequest, Result<string>> _registerHandler;
-        private readonly IQueryHandler<UserLoginRequest, Result<string>> _loginHandler;
+        private readonly IQueryDispatcher _queryDispatcher;
+        private readonly ICommandDispatcher _commandDispatcher;
 
         public AuthController(
-            ICommandHandler<RegisterUserRequest, Result<string>> registerHandler,
-            IQueryHandler<UserLoginRequest, Result<string>> loginHandler)
+            IQueryDispatcher queryDispatcher,
+            ICommandDispatcher commandDispatcher)
         {
-            _registerHandler = registerHandler;
-            _loginHandler = loginHandler;
+            _queryDispatcher = queryDispatcher;
+            _commandDispatcher = commandDispatcher;
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterUserRequest model)
+        public async Task<IActionResult> Register([FromBody] RegisterUserRequest model, CancellationToken cancellationToken)
         {
-            var result = await _registerHandler.Handle(model);
+            var result = await _commandDispatcher.Dispatch<RegisterUserRequest, Result<string>>(model, cancellationToken);
             if (result.Success)
                 return Ok(new { Message = "User registered successfully!", UserId = result.Value });
 
@@ -35,9 +36,9 @@ namespace AngularApp.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest model)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest model, CancellationToken cancellationToken)
         {
-            var result = await _loginHandler.Handle(model);
+            var result = await _queryDispatcher.Dispatch<UserLoginRequest, Result<string>>(model, cancellationToken);
             if (!result.Success)
                 return Unauthorized(new { Errors = result.Errors });
 

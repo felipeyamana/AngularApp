@@ -14,7 +14,7 @@ namespace Application.Users.Commands.RegisterUser
             _userManager = userManager;
         }
 
-        public async Task<Result<string>> Handle(RegisterUserRequest request)
+        public async Task<Result<string>> Handle(RegisterUserRequest request, CancellationToken cancellationToken)
         {
             var user = new ApplicationUser
             {
@@ -24,6 +24,8 @@ namespace Application.Users.Commands.RegisterUser
                 LastName = request.LastName
             };
 
+            // UserManager doesn't accept cancellationToken directly
+            // so just pass it along where possible in EF queries later
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (result.Succeeded)
