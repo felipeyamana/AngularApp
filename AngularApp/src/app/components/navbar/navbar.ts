@@ -1,19 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { UserService, User } from '../../services/user.service';
+import { AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe, NgIf],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {
-  constructor(private router: Router) {}
+export class Navbar implements OnInit {
+  constructor(private router: Router, private userService: UserService) {}
 
-  // maybe do more on logout ?
+  get currentUser$() {
+    return this.userService.currentUser$;
+  }
+
+  ngOnInit(): void {
+    this.userService.loadCurrentUser().subscribe({
+      next: (user) => console.log('[Navbar] Got user from API:', user),
+      error: (err) => console.error('[Navbar] Error fetching user:', err)
+    });
+  }
+
   logout(): void {
-    localStorage.removeItem('auth_token'); // clear JWT
-    this.router.navigate(['/login']); // redirect to login
+    localStorage.removeItem('auth_token');
+    this.userService.clearCurrentUser();
+    this.router.navigate(['/login']);
   }
 }
+

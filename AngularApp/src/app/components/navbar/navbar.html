@@ -77,7 +77,9 @@
             alt=""
             loading="lazy"
           />
-          <strong class="d-none d-sm-block ms-1">John</strong>
+          <strong class="d-none d-sm-block ms-1">
+            {{ (currentUser$ | async)?.firstName || 'Guest' }}
+          </strong>
         </a>
       </li>
       <li class="nav-item me-3 me-lg-1">

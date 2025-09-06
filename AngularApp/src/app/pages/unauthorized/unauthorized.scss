@@ -1,0 +1,29 @@
+.unauthorized-container {
+  text-align: center;
+  margin-top: 5rem;
+
+  h1 {
+    font-size: 2rem;
+    color: #e74c3c;
+  }
+
+  p {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+  }
+
+  button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #2980b9;
+    }
+  }
+}
