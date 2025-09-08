@@ -33,12 +33,16 @@ export class Login implements OnInit {
     console.log('something on init');
   }
 
+  isLoading: boolean = false;
+
   onSubmit(): void {
     this.errorMessage = '';
     this.successMessage = '';
+    this.isLoading = true;
 
     if (!this.email || !this.password) {
       this.errorMessage = 'Both fields are required!';
+      this.isLoading = false;
       return;
     }
 
@@ -52,14 +56,16 @@ export class Login implements OnInit {
 
         this.userService.loadCurrentUser().subscribe({
           next: () => {
-            // redirect to intended page after login
+            this.isLoading = false;
             this.router.navigate([this.returnUrl]);
           }
         });
       },
       error: (err) => {
         this.errorMessage = err.error?.errors?.[0] || 'Login failed.';
+        this.isLoading = false;
       }
     });
   }
+
 }
