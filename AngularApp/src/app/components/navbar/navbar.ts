@@ -24,10 +24,15 @@ export class Navbar implements OnInit {
     });
   }
 
-  logout(): void {
-    localStorage.removeItem('auth_token');
-    this.userService.clearCurrentUser();
-    this.router.navigate(['/login']);
+  onLogout(event?: Event): void {
+    this.userService.logout().subscribe({
+      next: () => {
+        console.log('[Navbar] Logged out');
+        this.userService.clearCurrentUser();
+        this.router.navigate(['/login']);
+      },
+      error: (err) => console.error('[Navbar] Logout failed', err)
+    });
   }
 }
 

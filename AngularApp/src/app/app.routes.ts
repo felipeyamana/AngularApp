@@ -7,12 +7,12 @@ import { Unauthorized } from './pages/unauthorized/unauthorized';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate:[loginGuard] },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { 
     path: 'dashboard', 
     component: Dashboard, 
     canActivate: [authGuard],
     data: { roles: ['User'] }
   },
-  { path: 'unauthorized', component: Unauthorized },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'unauthorized', component: Unauthorized }
 ];

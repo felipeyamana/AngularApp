@@ -48,7 +48,6 @@ export class Login implements OnInit {
     }).subscribe({
       next: (response) => {
         this.successMessage = 'Login successful';
-        localStorage.setItem('auth_token', response.token);
         console.log('[Login] Got token:', response.token);
 
         this.userService.loadCurrentUser().subscribe({

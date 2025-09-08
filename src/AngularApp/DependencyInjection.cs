@@ -11,7 +11,7 @@ namespace AngularApp
             return services;
         }
 
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(options =>
             {
@@ -28,23 +28,41 @@ namespace AngularApp
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (string.IsNullOrEmpty(context.Token) && context.Request.Cookies.ContainsKey("auth_token"))
+                        {
+                            var token = context.Request.Cookies["auth_token"];
+                            if (!string.IsNullOrEmpty(token))
+                            {
+                                context.Token = token;
+                            }
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
             return services;
         }
 
-        public static IServiceCollection AddCors(this IServiceCollection services)
+        public static IServiceCollection AddCorsPolicies(this IServiceCollection services)
         {
             services.AddCors(options =>
             {
                 // dev
                 options.AddPolicy("AllowAngularDev", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                    policy.WithOrigins("https://localhost:44307")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
 
                 // production, domain doesnt exist yet

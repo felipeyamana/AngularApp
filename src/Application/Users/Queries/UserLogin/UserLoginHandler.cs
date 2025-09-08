@@ -64,6 +64,5 @@ namespace Application.Users.Queries.UserLogin
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
     }
 }

@@ -15,20 +15,10 @@ namespace AngularApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-            builder.Services.AddAuthentication(builder.Configuration);
-            builder.Services.AddCors();
+            builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddCorsPolicies();
 
             var app = builder.Build();
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseCors("AllowAngularDev");
-            }
-            else
-            {
-                app.UseStaticFiles();
-                app.MapFallbackToFile("index.html");
-            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -38,7 +28,13 @@ namespace AngularApp
                 app.UseHsts();
             }
 
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseCors("AllowAngularDev");
+            }
+
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -47,9 +43,10 @@ namespace AngularApp
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapFallbackToFile("index.html");
 
+            app.MapControllers();
             app.MapRazorPages();
 
             app.Run();

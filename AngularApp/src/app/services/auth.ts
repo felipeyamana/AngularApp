@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 interface LoginResponse {
@@ -13,29 +12,48 @@ interface LoginResponse {
 export class Auth {
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  // Call backend login API
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password });
+    return from(
+      fetch(`${this.apiUrl}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      }).then(async response => {
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
+        }
+        return (await response.json()) as LoginResponse;
+      })
+    );
   }
 
-  // Call backend register API
   register(firstName: string, lastName: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { firstName, lastName, email, password });
+    return from(
+      fetch(`${this.apiUrl}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ firstName, lastName, email, password })
+      }).then(async response => {
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
+        }
+        return response.json();
+      })
+    );
   }
 
-  // Token management
   saveToken(token: string): void {
     localStorage.setItem('auth_token', token);
   }
 
   getToken(): string | null {
     return localStorage.getItem('auth_token');
-  }
-
-  logout(): void {
-    localStorage.removeItem('auth_token');
   }
 
   isLoggedIn(): boolean {

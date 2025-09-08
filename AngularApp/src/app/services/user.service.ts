@@ -1,33 +1,69 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, from, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  roles: string[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/user/getcurrent`;
+  private apiUrl = `${environment.apiUrl}/user`;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  loadCurrentUser(): Observable<User> {
-    return this.http.get<User>(this.apiUrl, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-      }
-    }).pipe(
-      tap(user => this.currentUserSubject.next(user))
+  loadCurrentUser(options?: { forceRefresh?: boolean }): Observable<User | null> {
+    if (!options?.forceRefresh && this.currentUserSubject.value) {
+      console.log('returning existing user');
+      return of(this.currentUserSubject.value);
+    }
+
+    const endpoint = `${this.apiUrl}/getcurrent`;
+
+    return from(
+      fetch(endpoint, {
+        method: 'GET',
+        credentials: 'include'
+      }).then(async response => {
+        if (!response.ok) {
+          throw new Error(`[UserService] HTTP ${response.status}`);
+        }
+        return (await response.json()) as User;
+      })
+    ).pipe(
+      tap(user => this.currentUserSubject.next(user)),
+      catchError(err => {
+        console.log('[UserService] loadCurrentUser failed', err);
+        this.currentUserSubject.next(null);
+        return of(null);
+      })
+    );
+  }
+
+  logout(): Observable<any> {
+    const endpoint = `${this.apiUrl}/logout`;
+    console.log('[Auth] logout URL:', `${endpoint}`);
+
+    return from(
+      fetch(endpoint, {
+        method: 'POST',
+        credentials: 'include'
+      }).then(async response => {
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
+        }
+        return response.json().catch(() => ({ success: true }));
+      })
     );
   }
 

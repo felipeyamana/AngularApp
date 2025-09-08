@@ -37,5 +37,19 @@ namespace AngularApp.Controllers
                 Roles = roles
             });
         }
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            Response.Cookies.Delete("auth_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/"   // must match login
+            });
+
+            return Ok(new { success = true, message = "Logged out successfully" });
+        }
     }
 }

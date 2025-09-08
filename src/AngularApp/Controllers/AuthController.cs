@@ -14,13 +14,15 @@ namespace AngularApp.Controllers
     {
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
-
+        private readonly IConfiguration _configuration;
         public AuthController(
             IQueryDispatcher queryDispatcher,
-            ICommandDispatcher commandDispatcher)
+            ICommandDispatcher commandDispatcher,
+            IConfiguration configuration)
         {
             _queryDispatcher = queryDispatcher;
             _commandDispatcher = commandDispatcher;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -39,8 +41,17 @@ namespace AngularApp.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginRequest model, CancellationToken cancellationToken)
         {
             var result = await _queryDispatcher.Dispatch<UserLoginRequest, Result<string>>(model, cancellationToken);
-            if (!result.Success)
+            if (!result.Success || string.IsNullOrEmpty(result.Value))
                 return Unauthorized(new { Errors = result.Errors });
+
+            Response.Cookies.Append("auth_token", result.Value, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,                // since everything is HTTPS
+                SameSite = SameSiteMode.Strict, // same-origin, so Strict is fine
+                Expires = DateTime.UtcNow.AddMinutes(
+                    Convert.ToDouble(_configuration["Jwt:ExpireMinutes"]))
+            });
 
             return Ok(new { Token = result.Value });
         }
