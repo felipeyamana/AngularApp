@@ -24,11 +24,11 @@ bld/
 [Ll]ogs/
 
 # Ignore the entire wwwroot folder
-wwwroot/
+**/wwwroot/
 
 # Ignore PublishProfiles and ServiceDependencies inside Properties
-Properties/PublishProfiles/
-Properties/ServiceDependencies/
+**/PublishProfiles/
+**/ServiceDependencies/
 
 # .NET Core
 project.lock.json
