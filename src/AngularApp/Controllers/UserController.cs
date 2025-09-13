@@ -1,4 +1,7 @@
 ﻿using Application.Common.Dispatchers.Interfaces;
+using Application.Common.Results;
+using Application.Users.Commands.UpdateUser;
+using Application.Users.Dtos;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,11 +32,12 @@ namespace AngularApp.Controllers
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            return Ok(new
+            return Ok(new UserResponseDto
             {
-                user.Email,
-                user.FirstName,
-                user.LastName,
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
                 Roles = roles
             });
         }
@@ -50,6 +54,22 @@ namespace AngularApp.Controllers
             });
 
             return Ok(new { success = true, message = "Logged out successfully" });
+        }
+        [HttpPost("updateuser")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser(UpdateUserRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _commandDispatcher.Dispatch<UpdateUserRequest, Result<ApplicationUser>>(request, cancellationToken);
+
+            if (result.Success && result.Value != null) return Ok(new UserResponseDto
+            {
+                Id = result.Value.Id,
+                FirstName = result.Value.FirstName,
+                LastName = result.Value.LastName,
+                Email = result.Value.Email
+            });
+
+            return BadRequest(new { Errors = result.Errors });
         }
     }
 }

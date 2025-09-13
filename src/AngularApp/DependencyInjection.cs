@@ -13,6 +13,12 @@ namespace AngularApp
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var key = configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new InvalidOperationException("JWT Key is missing. Make sure Jwt:Key is set in configuration or Azure App Settings.");
+            }
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,7 +74,7 @@ namespace AngularApp
                 // production, domain doesnt exist yet
                 options.AddPolicy("AllowAngularProd", policy =>
                 {
-                    policy.WithOrigins("https://myapp.com")
+                    policy.WithOrigins("https://angularapp-b9agd4ekbub8fpdn.canadacentral-01.azurewebsites.net")
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });

@@ -1,0 +1,139 @@
+<app-navbar></app-navbar>
+
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">User Profile</h3>
+    <div class="btn-group">
+      <button class="btn btn-outline-secondary" [disabled]="!isDataChanged" (click)="cancel()">
+        <i class="bi bi-x-circle"></i> Cancel
+      </button>
+      <button class="btn btn-primary" [disabled]="!isDataChanged" (click)="save()">
+        <i class="bi bi-save"></i> Save
+      </button>
+    </div>
+  </div>
+
+  <!-- Basic Info -->
+  <div class="card mb-4">
+    <div class="card-header">Basic Info</div>
+    <div class="card-body">
+      <div class="row align-items-center mb-3">
+        <div class="col-md-2 text-center">
+          <img src="https://via.placeholder.com/120" class="rounded-circle img-fluid mb-2" alt="User photo" />
+        </div>
+        <div class="col-md-10">
+          <h5 class="mb-0">Amelia Harper</h5>
+          <small class="text-muted">ID: 22</small>
+          <button class="btn btn-sm btn-outline-secondary ms-3">
+            <i class="bi bi-lock"></i> Change Password
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" [(ngModel)]="profileData.firstName" (ngModelChange)="onDataChanged()" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" [(ngModel)]="profileData.lastName" (ngModelChange)="onDataChanged()" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Department</label>
+          <select class="form-select">
+            <option selected>UI/UX</option>
+            <option>Backend Developers</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Position</label>
+          <select class="form-select">
+            <option selected>Designer</option>
+            <option>Developer</option>
+            <option>Technical Writer</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Hired Date</label>
+          <input type="date" class="form-control" value="2023-03-03" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Birth Date</label>
+          <input type="date" class="form-control" value="1980-05-03" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contacts & Address -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">Contacts</div>
+        <div class="card-body">
+          <p class="mb-1 fw-bold">
+            <i class="bi bi-telephone"></i> (213) 555-4276
+          </p>
+          <p class="text-muted mb-3">ameliah@dx-email.com</p>
+
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" value="(213) 555-4276" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" [(ngModel)]="profileData.email" (ngModelChange)="onDataChanged()" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Domain Username</label>
+            <input type="text" class="form-control" value="corp\amelia.harper" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <span class="badge bg-success">Salaried</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Supervisor</label>
+            <div class="d-flex align-items-center">
+              <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Supervisor" />
+              <span>Sam Adamson</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">Address</div>
+        <div class="card-body">
+          <p class="mb-3 fw-bold">
+            <i class="bi bi-geo-alt"></i> 405 E 42nd St, New York, NY, USA
+          </p>
+          <div class="mb-3">
+            <label class="form-label">Country</label>
+            <input type="text" class="form-control" value="USA" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" value="New York" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">State/province/area</label>
+            <input type="text" class="form-control" value="New York" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input type="text" class="form-control" value="405 E 42nd St" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Zip Code</label>
+            <input type="text" class="form-control" value="90014" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

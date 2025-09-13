@@ -4,6 +4,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface User {
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -45,6 +46,32 @@ export class UserService {
         console.log('[UserService] loadCurrentUser failed', err);
         this.currentUserSubject.next(null);
         return of(null);
+      })
+    );
+  }
+
+  updateUser(user: { id: string; firstName: string; lastName: string; email: string }): Observable<User> {
+    const endpoint = `${this.apiUrl}/updateuser`;
+
+    return from(
+      fetch(endpoint, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(async response => {
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
+        }
+        return (await response.json()) as User;
+      })
+    ).pipe(
+      catchError(err => {
+        console.error('[UserService] updateUser failed', err);
+        throw err;
       })
     );
   }

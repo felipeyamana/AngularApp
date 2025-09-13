@@ -1,4 +1,5 @@
 using Application;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Infrastructure;
 
 namespace AngularApp
@@ -23,7 +24,7 @@ namespace AngularApp
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -31,6 +32,11 @@ namespace AngularApp
             if (app.Environment.IsDevelopment())
             {
                 app.UseCors("AllowAngularDev");
+            }
+            else
+            {
+                app.UseCors("AllowAngularProd");
+                builder.Services.AddOpenTelemetry().UseAzureMonitor();
             }
 
             app.UseHttpsRedirection();
@@ -41,12 +47,12 @@ namespace AngularApp
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.MapControllers();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapFallbackToFile("index.html");
 
-            app.MapControllers();
             app.MapRazorPages();
 
             app.Run();

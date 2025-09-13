@@ -34,5 +34,9 @@ export class Navbar implements OnInit {
       error: (err) => console.error('[Navbar] Logout failed', err)
     });
   }
+
+  onProfileClick(event?: Event): void {
+    this.router.navigate(['/user-profile']);
+  }
 }
 

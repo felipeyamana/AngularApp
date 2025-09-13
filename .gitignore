@@ -23,6 +23,13 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# Ignore the entire wwwroot folder
+wwwroot/
+
+# Ignore PublishProfiles and ServiceDependencies inside Properties
+Properties/PublishProfiles/
+Properties/ServiceDependencies/
+
 # .NET Core
 project.lock.json
 project.fragment.lock.json
