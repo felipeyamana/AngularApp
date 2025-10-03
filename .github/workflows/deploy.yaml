@@ -56,23 +56,16 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-   # 9. Deploy to Azure WebApp
+      # 9. Deploy to Azure App Service, wiping old files first
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
         with:
-        app-name: angularapp
-        slot-name: Production
-        package: ./publish
-        clean: true 
+          app-name: angularapp
+          slot-name: Production
+          package: ./publish
+          clean: true 
 
-      # 10. Set Default Document and Restart App Service
-      - name: Set Default Document and Restart App Service
+      # 10. Restart App Service after deployment
+      - name: Restart App Service
         run: |
-          # Set the list of default documents, prioritizing index.csr.html
-          az webapp config set \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name angularapp \
-            --default-documents "index.csr.html,Default.htm,Default.html,Default.asp,index.htm,index.html,iisstart.htm,default.aspx,index.php"
-
-          # Restart the App Service to apply changes
           az webapp restart --name angularapp --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}

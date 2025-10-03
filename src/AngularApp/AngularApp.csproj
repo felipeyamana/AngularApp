@@ -10,15 +10,24 @@
 		<Exec Command="npm install" WorkingDirectory="../../AngularApp" />
 		<Exec Command="npm run build -- --configuration production" WorkingDirectory="../../AngularApp" />
 
-		<!-- Copy Angular dist output to wwwroot -->
+		<PropertyGroup>
+			<AngularBrowserDir>../../AngularApp/dist/angularapp/browser/</AngularBrowserDir>
+		</PropertyGroup>
+
 		<ItemGroup>
-			<AngularDistFiles Include="../../AngularApp/dist/angularapp/browser/**" />
+			<AngularDistFiles Include="$(AngularBrowserDir)**" Exclude="$(AngularBrowserDir)index.html" />
+
+			<AngularIndex Include="$(AngularBrowserDir)index.csr.html" />
 		</ItemGroup>
 
 		<RemoveDir Directories="wwwroot" />
 		<MakeDir Directories="wwwroot" />
+
 		<Copy SourceFiles="@(AngularDistFiles)"
-			  DestinationFolder="wwwroot/" />
+			DestinationFolder="wwwroot/" />
+
+		<Copy SourceFiles="@(AngularIndex)"
+			DestinationFiles="wwwroot/index.html" />
 	</Target>
 
     <ItemGroup>
