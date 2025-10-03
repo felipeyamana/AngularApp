@@ -68,7 +68,7 @@ jobs:
       # 10. Set Default Document and Restart App Service
       - name: Set Default Document and Restart App Service
         run: |
-        # Set the list of default documents, prioritizing index.csr.html
+          # Set the list of default documents, prioritizing index.csr.html
           az webapp config set \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --name angularapp \
