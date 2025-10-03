@@ -38,7 +38,7 @@ jobs:
       # 4. Copy Angular build output to ASP.NET Core wwwroot
       - name: Copy Angular dist to wwwroot
         run: |
-          rm -rf src/AngularApp/AngularApp/wwwroot/*
+          rm -rf src/AngularApp/wwwroot/*
           cp -r AngularApp/dist/AngularApp/browser/* src/AngularApp/wwwroot/
 
       # 5. Setup .NET
