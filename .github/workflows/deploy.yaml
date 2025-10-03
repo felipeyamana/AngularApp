@@ -24,7 +24,7 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      # 3. (Optional) Setup Node for Angular
+      # 3. Setup Node.js for Angular
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,17 +36,28 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      # 5. Build & Publish (includes Angular build via your .csproj target)
+      # 5. Ensure CSR index replaces default index BEFORE publish
+      - name: Replace index.html with CSR version
+        run: |
+          if [ -f AngularApp/dist/AngularApp/browser/index.csr.html ]; then
+            cp AngularApp/dist/AngularApp/browser/index.csr.html AngularApp/dist/AngularApp/browser/index.html
+            echo "index.html replaced with CSR version"
+          else
+            echo "CSR index not found, Angular build may not have run yet"
+          fi
+
+      # 6. Build & Publish (includes Angular build via .csproj target)
       - name: Publish project 
         run: dotnet publish src/AngularApp/AngularApp.csproj -c Release -o ./publish
 
+      # 7. Debugging: print published index.html
       - name: Print index.html
         run: |
           echo "----- index.html content -----"
-          cat ./publish/wwwroot/index.html
+          cat ./publish/wwwroot/index.html || echo "index.html not found"
           echo "------------------------------"
 
-      # 6. Azure Login with OIDC
+      # 8. Azure Login with OIDC
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -54,7 +65,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 7. Deploy to Azure App Service, wiping old files first
+      # 9. Deploy to Azure App Service, wiping old files first
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
         with:
@@ -63,6 +74,7 @@ jobs:
           package: ./publish
           clean: true 
 
+      # 10. Restart App Service after deployment
       - name: Restart App Service
         run: |
           az webapp restart --name angularapp --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
