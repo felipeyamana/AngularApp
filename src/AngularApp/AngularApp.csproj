@@ -11,10 +11,14 @@
 		<Exec Command="npm run build -- --configuration production" WorkingDirectory="../../AngularApp" />
 
 		<!-- Copy Angular dist output to wwwroot -->
+		<ItemGroup>
+			<AngularDistFiles Include="../../AngularApp/dist/angularapp/browser/**" />
+		</ItemGroup>
+
 		<RemoveDir Directories="wwwroot" />
 		<MakeDir Directories="wwwroot" />
 		<Copy SourceFiles="@(AngularDistFiles)"
-            DestinationFiles="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" />
+			  DestinationFolder="wwwroot/" />
 	</Target>
 
     <ItemGroup>

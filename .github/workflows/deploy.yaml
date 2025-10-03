@@ -6,8 +6,8 @@ on:
       - main
 
 permissions:
-  id-token: write
-  contents: read
+  id-token: write       # required for OIDC login
+  contents: read        # required for actions/checkout 
 
 jobs:
   build-and-deploy:
@@ -18,7 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js for Angular
+      # 2. Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # 3. (Optional) Setup Node for Angular
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -26,36 +32,21 @@ jobs:
           cache: 'npm'
           cache-dependency-path: AngularApp/package-lock.json
 
-      # 3. Build Angular app
-      - name: Install Angular dependencies
-        run: npm ci
-        working-directory: AngularApp
-
-      - name: Build Angular app
-        run: npm run build -- --configuration production
-        working-directory: AngularApp
-
-      # 4. Copy Angular build output to ASP.NET Core wwwroot
-      - name: Copy Angular dist to wwwroot
-        run: |
-          rm -rf src/AngularApp/wwwroot/*
-          cp -r AngularApp/dist/AngularApp/browser/* src/AngularApp/wwwroot/
-
-      # 5. Setup .NET
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      # 6. Restore .NET dependencies
+      # 4. Restore .NET dependencies
       - name: Restore dependencies
-        run: dotnet restore src/AngularApp/AngularApp.csproj
+        run: dotnet restore
 
-      # 7. Publish ASP.NET Core app
-      - name: Publish project
+      # 5. Build & Publish (includes Angular build via your .csproj target)
+      - name: Publish project 
         run: dotnet publish src/AngularApp/AngularApp.csproj -c Release -o ./publish
 
-      # 8. Login to Azure
+      - name: Print index.html
+        run: |
+          echo "----- index.html content -----"
+          cat ./publish/wwwroot/index.html
+          echo "------------------------------"
+
+      # 6. Azure Login with OIDC
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -63,11 +54,15 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 9. Deploy to App Service (clean wipe first)
+      # 7. Deploy to Azure App Service, wiping old files first
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
         with:
           app-name: angularapp
           slot-name: Production
           package: ./publish
-          clean: true
+          clean: true 
+
+      - name: Restart App Service
+        run: |
+          az webapp restart --name angularapp --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
