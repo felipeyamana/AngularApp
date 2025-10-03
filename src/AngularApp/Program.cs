@@ -19,6 +19,13 @@ namespace AngularApp
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddCorsPolicies();
 
+            if (!builder.Environment.IsDevelopment())
+            {
+                builder.Services
+                    .AddOpenTelemetry()
+                    .UseAzureMonitor();
+            }
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -36,7 +43,6 @@ namespace AngularApp
             else
             {
                 app.UseCors("AllowAngularProd");
-                builder.Services.AddOpenTelemetry().UseAzureMonitor();
             }
 
             app.UseHttpsRedirection();

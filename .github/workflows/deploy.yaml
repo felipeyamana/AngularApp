@@ -3,7 +3,7 @@ name: Build and Deploy to Azure App Service (Windows)
 on:
   push:
     branches:
-      - main   # or change to your deployment branch
+      - main
 
 permissions: 
   id-token: write  
@@ -22,7 +22,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'   # match your project
+          dotnet-version: '9.0'
 
       # 3. Restore dependencies
       - name: Restore dependencies
@@ -48,6 +48,6 @@ jobs:
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: angularapp   # your App Service name
+          app-name: angularapp
           slot-name: Production
           package: ./publish
