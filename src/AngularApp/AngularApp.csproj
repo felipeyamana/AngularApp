@@ -13,7 +13,8 @@
 		<!-- Copy Angular dist output to wwwroot -->
 		<RemoveDir Directories="wwwroot" />
 		<MakeDir Directories="wwwroot" />
-		<Copy SourceFiles="@(AngularDistFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" />
+		<Copy SourceFiles="@(AngularDistFiles)"
+            DestinationFiles="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" />
 	</Target>
 
     <ItemGroup>
