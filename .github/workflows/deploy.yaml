@@ -32,11 +32,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: AngularApp/package-lock.json
 
-      # 3a. Clear Angular CLI cache
-      - name: Clear Angular CLI cache
-        run: npx ng cache clean
-        working-directory: AngularApp
-
       # 4. Restore .NET dependencies
       - name: Restore dependencies
         run: dotnet restore
