@@ -5,6 +5,10 @@ on:
     branches:
       - main   # or change to your deployment branch
 
+permissions: 
+  id-token: write  
+  contents: read
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
