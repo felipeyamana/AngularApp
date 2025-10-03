@@ -2,25 +2,29 @@ name: Build and Deploy to Azure App Service (Windows)
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 permissions:
-  id-token: write
-  contents: read
+  id-token: write       # required for OIDC login
+  contents: read        # required for actions/checkout 
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout source
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
 
+      # 3. Setup Node.js for Angular
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,38 +32,29 @@ jobs:
           cache: 'npm'
           cache-dependency-path: AngularApp/package-lock.json
 
+      # 4. Restore .NET dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Your publish (this builds Angular via your .csproj target)
-      - name: Publish project
+      # After Angular build, before dotnet publish
+      - name: Copy Angular dist to wwwroot
+        run: |
+          rm -rf src/AngularApp/wwwroot/*
+          cp -r AngularApp/dist/AngularApp/browser/* src/AngularApp/wwwroot/
+
+
+      # 6. Build & Publish (includes Angular build via .csproj target)
+      - name: Publish project 
         run: dotnet publish src/AngularApp/AngularApp.csproj -c Release -o ./publish
 
-      # ⬇️ NEW: Force CSR index into the published output
-      - name: Replace published index.html with CSR version
-        run: |
-          if [ -f ./publish/wwwroot/index.csr.html ]; then
-            cp ./publish/wwwroot/index.csr.html ./publish/wwwroot/index.html
-            echo "✔ Replaced ./publish/wwwroot/index.html with CSR version"
-          elif [ -f AngularApp/dist/AngularApp/browser/index.csr.html ]; then
-            # Fallback in case CSR wasn’t copied to wwwroot by publish
-            cp AngularApp/dist/AngularApp/browser/index.csr.html ./publish/wwwroot/index.html
-            echo "✔ Copied CSR index from Angular dist to publish/wwwroot/index.html"
-          else
-            echo "❌ CSR index not found (looked in publish/wwwroot and Angular dist)."
-            ls -R ./publish/wwwroot || true
-            exit 1
-          fi
-
-      - name: Print published index.html
+      # 7. Debugging: print published index.html
+      - name: Print index.html
         run: |
           echo "----- index.html content -----"
-          sed -n '1,200p' ./publish/wwwroot/index.html || echo "index.html not found"
+          cat ./publish/wwwroot/index.html || echo "index.html not found"
           echo "------------------------------"
-          echo "----- wwwroot listing -----"
-          ls -lah ./publish/wwwroot || true
-          echo "---------------------------"
 
+      # 8. Azure Login with OIDC
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -67,13 +62,16 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # 9. Deploy to Azure App Service, wiping old files first
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
         with:
           app-name: angularapp
           slot-name: Production
           package: ./publish
-          clean: true
+          clean: true 
 
+      # 10. Restart App Service after deployment
       - name: Restart App Service
-        run: az webapp restart --name angularapp --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
+        run: |
+          az webapp restart --name angularapp --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
