@@ -37,6 +37,11 @@ jobs:
         run: npm install
         working-directory: AngularApp # Set working directory to the Angular project root
 
+      # 5. Build Angular (CSR only)
+      - name: Build Angular (CSR only)
+        run: npx ng build AngularApp --configuration production
+        working-directory: AngularApp
+
       # 6. Build & Publish (includes Angular build via .csproj target)
       - name: Publish project 
         run: dotnet publish src/AngularApp/AngularApp.csproj -c Release -o ./publish
