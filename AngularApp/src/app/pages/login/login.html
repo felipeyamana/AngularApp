@@ -16,7 +16,7 @@
         <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="1"
           #passwordCtrl="ngModel" />
         <small class="text-danger" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
-          Password is required.
+          Password is required!
         </small>
       </div>
 
