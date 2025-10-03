@@ -1,0 +1,49 @@
+name: Build and Deploy to Azure App Service (Windows)
+
+on:
+  push:
+    branches:
+      - main   # or change to your deployment branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'   # match your project
+
+      # 3. Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # 4. Build
+      - name: Build with dotnet
+        run: dotnet build --configuration Release --no-restore
+
+      # 5. Publish
+      - name: Publish project
+        run: dotnet publish -c Release -o ./publish
+
+      # 6. Login to Azure (using OIDC and repo secrets)
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # 7. Deploy to Azure App Service
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: angularapp   # your App Service name
+          slot-name: Production
+          package: ./publish
