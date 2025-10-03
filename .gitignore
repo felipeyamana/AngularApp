@@ -26,7 +26,7 @@ bld/
 # Ignore the entire wwwroot folder
 **/wwwroot/
 
-src/AngularApp/wwwroot/*
+/src/AngularApp/wwwroot/
 
 # Ignore PublishProfiles and ServiceDependencies inside Properties
 **/PublishProfiles/
