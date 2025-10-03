@@ -37,7 +37,7 @@ jobs:
         run: dotnet restore
 
       # 5. Build & Publish (includes Angular build via your .csproj target)
-      - name: Publish project
+      - name: Publish project 
         run: dotnet publish src/AngularApp/AngularApp.csproj -c Release -o ./publish
 
       - name: Print index.html
