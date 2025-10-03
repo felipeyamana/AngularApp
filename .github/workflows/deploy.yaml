@@ -40,6 +40,12 @@ jobs:
       - name: Publish project
         run: dotnet publish src/AngularApp/AngularApp.csproj -c Release -o ./publish
 
+      - name: Print index.html
+        run: |
+          echo "----- index.html content -----"
+          cat ./publish/wwwroot/index.html
+          echo "------------------------------"
+
       # 6. Azure Login with OIDC
       - name: Azure Login
         uses: azure/login@v2
