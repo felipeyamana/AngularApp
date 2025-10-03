@@ -32,16 +32,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: AngularApp/package-lock.json
 
-      # 4. Restore .NET dependencies
-      - name: Restore dependencies
-        run: dotnet restore
-
-      # After Angular build, before dotnet publish
-      - name: Copy Angular dist to wwwroot
-        run: |
-          rm -rf src/AngularApp/wwwroot/*
-          cp -r AngularApp/dist/AngularApp/browser/* src/AngularApp/wwwroot/
-
+      # 4. Install Angular dependencies (required for the .csproj target)
+      - name: Install Angular dependencies
+        run: npm install
+        working-directory: AngularApp # Set working directory to the Angular project root
 
       # 6. Build & Publish (includes Angular build via .csproj target)
       - name: Publish project 

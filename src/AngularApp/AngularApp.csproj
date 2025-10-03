@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-	<Target Name="PublishAngular" BeforeTargets="Build">
+	<Target Name="PublishAngular" BeforeTargets="Publish">
 		<Exec Command="npm install" WorkingDirectory="../../AngularApp" />
 		<Exec Command="npm run build -- --configuration production" WorkingDirectory="../../AngularApp" />
 
