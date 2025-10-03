@@ -46,10 +46,6 @@ namespace AngularApp
             }
 
             app.UseHttpsRedirection();
-            app.UseDefaultFiles(new DefaultFilesOptions
-            {
-                DefaultFileNames = new List<string> { "index.csr.html" }
-            });
             app.UseStaticFiles();
             app.UseRouting();
 
@@ -61,7 +57,7 @@ namespace AngularApp
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapFallbackToFile("index.csr.html");
+            app.MapFallbackToFile("index.html");
 
             app.MapRazorPages();
 
