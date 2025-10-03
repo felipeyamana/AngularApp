@@ -39,7 +39,7 @@ jobs:
       - name: Copy Angular dist to wwwroot
         run: |
           rm -rf src/AngularApp/AngularApp/wwwroot/*
-          cp -r AngularApp/dist/AngularApp/browser/* src/AngularApp/AngularApp/wwwroot/
+          cp -r AngularApp/dist/AngularApp/browser/* src/AngularApp/wwwroot/
 
       # 5. Setup .NET
       - name: Setup .NET
