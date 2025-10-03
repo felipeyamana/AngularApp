@@ -19,12 +19,12 @@ namespace AngularApp
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddCorsPolicies();
 
-            if (!builder.Environment.IsDevelopment())
-            {
-                builder.Services
-                    .AddOpenTelemetry()
-                    .UseAzureMonitor();
-            }
+            //if (!builder.Environment.IsDevelopment())
+            //{
+            //    builder.Services
+            //        .AddOpenTelemetry()
+            //        .UseAzureMonitor();
+            //}
 
             var app = builder.Build();
 
