@@ -17,3 +17,20 @@ html, body {
   color: var(--bs-body-color);
   transition: background-color 0.3s, color 0.3s;
 }
+
+[data-bs-theme="dark"] {
+  .alert-warning {
+    background-color: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning-text-emphasis);
+  }
+
+  .badge.bg-success {
+    background-color: var(--bs-success-bg-subtle);
+    color: var(--bs-success-text-emphasis);
+  }
+
+  .btn-outline-secondary {
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+  }
+}
