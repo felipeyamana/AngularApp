@@ -5,6 +5,7 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { authGuard } from './guards/auth.guard';
 import { loginGuard } from './guards/login.guard';
 import { Unauthorized } from './pages/unauthorized/unauthorized';
+import { SettingsComponent } from './settings/settings.component';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate:[loginGuard] },
@@ -21,5 +22,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['User'] }
   },
+  { path: 'settings', component: SettingsComponent },
   { path: 'unauthorized', component: Unauthorized }
 ];

@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.card {
+  border: none;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.form-switch {
+  .form-check-input {
+    cursor: pointer;
+  }
+
+  label {
+    margin-left: 0.5rem;
+    font-weight: 500;
+  }
+}

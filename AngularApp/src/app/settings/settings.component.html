@@ -1,0 +1,26 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 rounded shadow-sm">
+      <h5 class="mb-3"><i class="fas fa-cog mr-2"></i>Settings</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" 
+             [class.active]="activeMenu === 'theme-ui'"
+             (click)="activeMenu = 'theme-ui'">
+            <i class="fas fa-adjust mr-2"></i> Theme / UI
+          </a>
+        </li>
+        <!-- future items here -->
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div [ngSwitch]="activeMenu">
+        <app-theme-ui *ngSwitchCase="'theme-ui'"></app-theme-ui>
+        <!-- more submenus will be added here -->
+      </div>
+    </main>
+  </div>
+</div>

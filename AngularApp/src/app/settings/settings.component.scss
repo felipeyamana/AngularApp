@@ -1,0 +1,16 @@
+.sidebar {
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.nav-link {
+  cursor: pointer;
+  color: #333;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+
+  &.active, &:hover {
+    background-color: #0d6efd;
+    color: #fff;
+  }
+}

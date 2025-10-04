@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+html, body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  transition: background-color 0.3s, color 0.3s;
+  min-height: 100vh;
+}
+
+.card, .modal-content {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color-translucent);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar, .sidebar {
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-body-color);
+  transition: background-color 0.3s, color 0.3s;
+}
