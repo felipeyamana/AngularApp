@@ -1,3 +1,4 @@
+/* Dark/light theme adjustments */
 html, body {
   background-color: var(--bs-body-bg);
   color: var(--bs-body-color);
@@ -32,5 +33,27 @@ html, body {
   .btn-outline-secondary {
     border-color: var(--bs-border-color);
     color: var(--bs-body-color);
+  }
+}
+
+/* Compact layout adjustments */
+body.compact {
+  --bs-body-font-size: 0.9rem;
+
+  .form-control,
+  .btn,
+  .table td,
+  .table th,
+  .card-body,
+  .alert {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .card-title {
+    margin-bottom: 0.5rem;
+  }
+
+  .card {
+    margin-bottom: 0.75rem;
   }
 }

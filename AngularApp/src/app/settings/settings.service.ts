@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
 
+interface UserPreferences {
+  theme: 'light' | 'dark';
+  layout: 'comfortable' | 'compact';
+}
+
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-  private themeKey = 'app-theme';
+  private readonly key = 'user-preferences';
 
-  getTheme(): 'light' | 'dark' {
-    return (localStorage.getItem(this.themeKey) as 'light' | 'dark') || 'light';
+  getPreferences(): UserPreferences {
+    return JSON.parse(localStorage.getItem(this.key) || '{}');
   }
 
-  setTheme(theme: 'light' | 'dark'): void {
-    localStorage.setItem(this.themeKey, theme);
+  updatePreferences(update: Partial<UserPreferences>): void {
+    const current = this.getPreferences();
+    const merged = { ...current, ...update };
+    localStorage.setItem(this.key, JSON.stringify(merged));
   }
 }
