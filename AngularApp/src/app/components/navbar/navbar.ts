@@ -38,5 +38,9 @@ export class Navbar implements OnInit {
   onProfileClick(event?: Event): void {
     this.router.navigate(['/user-profile']);
   }
+
+  onSettingsClick(event?: Event): void {
+    this.router.navigate(['/settings']);
+  }
 }
 

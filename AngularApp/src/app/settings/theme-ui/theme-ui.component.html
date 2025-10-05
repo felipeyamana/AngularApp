@@ -1,12 +1,26 @@
 <div class="card shadow-sm mt-3">
   <div class="card-body">
-    <h4 class="card-title mb-3"><i class="fas fa-adjust mr-2"></i> Theme & UI</h4>
-    <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="darkModeSwitch"
-             [checked]="isDarkMode" (change)="toggleTheme()">
-      <label class="form-check-label" for="darkModeSwitch">
-        Dark Mode
-      </label>
+    <h4 class="card-title">
+      <i class="fas fa-adjust me-2"></i> Theme & UI
+    </h4>
+
+    <!-- Dark Mode -->
+    <div class="setting-row">
+      <label class="form-label" for="darkModeSwitch">Dark Mode</label>
+      <div class="form-check form-switch m-0">
+        <input class="form-check-input" type="checkbox" id="darkModeSwitch" [checked]="isDarkMode"
+          (change)="toggleTheme()" />
+      </div>
+    </div>
+
+    <!-- Layout Density -->
+    <div class="setting-row">
+      <label class="form-label" for="layoutDensitySelect">Layout Density</label>
+      <select id="layoutDensitySelect" class="form-select form-select-sm" [(ngModel)]="layoutDensity"
+        (change)="setDensity()">
+        <option value="comfortable">Comfortable</option>
+        <option value="compact">Compact</option>
+      </select>
     </div>
   </div>
 </div>
