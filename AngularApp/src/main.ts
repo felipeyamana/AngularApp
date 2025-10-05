@@ -1,3 +1,5 @@
+/// <reference types="@angular/localize" />
+
 import 'zone.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { bootstrapApplication } from '@angular/platform-browser';
