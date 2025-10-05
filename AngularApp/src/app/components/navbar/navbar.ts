@@ -42,5 +42,10 @@ export class Navbar implements OnInit {
   onSettingsClick(event?: Event): void {
     this.router.navigate(['/settings']);
   }
+
+  onLogsClick(event?: Event): void {
+    event?.preventDefault();
+    this.router.navigate(['/logs']);
+  }
 }
 

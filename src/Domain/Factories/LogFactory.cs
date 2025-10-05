@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Logs;
+﻿using Domain.Entities;
+using Domain.Entities.Logs;
 using System.Net;
 
 namespace Domain.Factories
@@ -16,7 +17,8 @@ namespace Domain.Factories
                 Action = "System Backup",
                 Description = "Automated system backup completed successfully.",
                 IpAddress = GetLocalIpAddress(),
-                EventDate = DateTime.UtcNow
+                EventDate = DateTime.UtcNow,
+                ActionSuccess = true
             };
         }
 
@@ -31,7 +33,42 @@ namespace Domain.Factories
                 Action = "System Backup (Failed)",
                 Description = $"Backup process failed: {errorMessage}",
                 IpAddress = GetLocalIpAddress(),
-                EventDate = DateTime.UtcNow
+                EventDate = DateTime.UtcNow,
+                ActionSuccess = false
+            };
+        }
+
+        /// <summary>
+        /// Creates a log representing a successful user profile update.
+        /// </summary>
+        public static Log CreateUserProfileUpdateSuccess(ApplicationUser user, string? ipAddress)
+        {
+            return new Log
+            {
+                LogTypeId = 1,
+                UserId = user.Id,
+                Action = "User profile updated successfully",
+                Description = $"User {user.Email} updated their profile information.",
+                EventDate = DateTime.UtcNow,
+                IpAddress = ipAddress,
+                ActionSuccess = true
+            };
+        }
+
+        /// <summary>
+        /// Creates a log representing a failed user profile update.
+        /// </summary>
+        public static Log CreateUserProfileUpdateFailure(ApplicationUser user, string? ipAddress, string? message)
+        {
+            return new Log
+            {
+                LogTypeId = 1,
+                UserId = user.Id,
+                Action = "User profile update failed",
+                Description = $"User {user.Email} could not update their profile information. {message}",
+                EventDate = DateTime.UtcNow,
+                IpAddress = ipAddress,
+                ActionSuccess = false
             };
         }
 
