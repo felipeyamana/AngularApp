@@ -20,6 +20,13 @@
   color: var(--bs-body-color);
 }
 
+/* Disable effect on the table while it loads */
+.loading-table .table {
+  opacity: 0.5; 
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
 /* Header */
 .table thead {
   background-color: #f6f8fa;

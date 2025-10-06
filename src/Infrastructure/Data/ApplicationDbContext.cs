@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Logs;
+using Domain.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace Infrastructure.Data
         {
         }
 
-        public DbSet<LogType> LogTypes => Set<LogType>();
+        public DbSet<LogType> LogTypesSet => Set<LogType>();
         public DbSet<Log> Logs => Set<Log>();
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -21,8 +22,18 @@ namespace Infrastructure.Data
 
             builder.Entity<LogType>(entity =>
             {
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("GETUTCDATE()");
             });
 
             builder.Entity<Log>(entity =>

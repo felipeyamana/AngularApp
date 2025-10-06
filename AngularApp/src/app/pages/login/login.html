@@ -1,34 +1,106 @@
 <div class="login-container">
   <div class="login-card">
-    <h2>Login</h2>
 
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailCtrl="ngModel" />
-        <small class="text-danger" *ngIf="emailCtrl.invalid && emailCtrl.touched">
-          Please enter a valid email.
-        </small>
-      </div>
+    <!-- Toggle Section -->
+    <div class="toggle-section text-center mb-3">
+      <button class="btn btn-link" type="button" (click)="isRegisterMode = !isRegisterMode">
+        <span *ngIf="!isRegisterMode">
+          I am not registered — <strong>Sign Up</strong>
+        </span>
+        <span *ngIf="isRegisterMode">
+          Already have an account? <strong>Login</strong>
+        </span>
+      </button>
+    </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="1"
-          #passwordCtrl="ngModel" />
-        <small class="text-danger" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
-          Password is required!
-        </small>
-      </div>
+    <!-- LOGIN FORM -->
+    <div *ngIf="!isRegisterMode">
+      <h2>Login</h2>
 
-      <button type="submit" [disabled]="loginForm.invalid || isLoading">
-        <span *ngIf="!isLoading">Login</span>
-        <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span *ngIf="isLoading"> Loading...</span>
+      <!-- Google Sign-In Button -->
+      <button type="button" class="btn btn-google w-100 mb-3" (click)="onGoogleLogin()">
+        <i class="fab fa-google mr-2"></i> Sign in with Google
       </button>
 
-    </form>
+      <div class="divider">
+        <span>or</span>
+      </div>
 
-    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+      <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailCtrl="ngModel" />
+          <small class="text-danger" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+            Please enter a valid email.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="1"
+            #passwordCtrl="ngModel" />
+          <small class="text-danger" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
+            Password is required!
+          </small>
+        </div>
+
+        <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn btn-primary w-100">
+          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span *ngIf="isLoading"> Loading...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div *ngIf="isRegisterMode">
+      <h2>Sign Up</h2>
+      <form (ngSubmit)="onSubmitRegister()" #registerForm="ngForm">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" [(ngModel)]="firstName" required
+            #firstNameCtrl="ngModel" />
+          <small class="text-danger" *ngIf="firstNameCtrl.invalid && firstNameCtrl.touched">
+            First name is required.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" [(ngModel)]="lastName" required #lastNameCtrl="ngModel" />
+          <small class="text-danger" *ngIf="lastNameCtrl.invalid && lastNameCtrl.touched">
+            Last name is required.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="emailRegister">Email</label>
+          <input type="email" id="emailRegister" name="emailRegister" [(ngModel)]="email" required email
+            #emailRegisterCtrl="ngModel" />
+          <small class="text-danger" *ngIf="emailRegisterCtrl.invalid && emailRegisterCtrl.touched">
+            Please enter a valid email.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordRegister">Password</label>
+          <input type="password" id="passwordRegister" name="passwordRegister" [(ngModel)]="password" required
+            minlength="6" #passwordRegisterCtrl="ngModel" />
+          <small class="text-danger" *ngIf="passwordRegisterCtrl.invalid && passwordRegisterCtrl.touched">
+            Password must be at least 6 characters.
+          </small>
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn btn-success w-100">
+          <span *ngIf="!isLoading">Create Account</span>
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span *ngIf="isLoading"> Creating...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Messages -->
+    <p *ngIf="errorMessage" class="error mt-3">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="success mt-3">{{ successMessage }}</p>
   </div>
 </div>

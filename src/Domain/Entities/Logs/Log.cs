@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Logs
 {
     public class Log
     {
         public long Id { get; set; }
-
+        [Column(TypeName = "int")]
         public int LogTypeId { get; set; }
         public LogType LogType { get; set; } = null!;
         public string? UserId { get; set; }

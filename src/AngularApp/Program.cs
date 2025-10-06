@@ -1,12 +1,15 @@
 using Application;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Infrastructure;
+using Infrastructure.Data;
+using Infrastructure.Seeds;
+using Microsoft.EntityFrameworkCore;
 
 namespace AngularApp
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -35,15 +38,18 @@ namespace AngularApp
                 //app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+                app.UseCors("AllowAngularProd");
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseCors("AllowAngularDev");
+                using (var scope = app.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    await db.Database.MigrateAsync();
+                    await db.SeedLogTypesAsync();
+                }
             }
             else
             {
-                app.UseCors("AllowAngularProd");
+                app.UseCors("AllowAngularDev");
             }
 
             app.UseHttpsRedirection();

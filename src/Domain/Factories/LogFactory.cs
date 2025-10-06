@@ -1,76 +1,77 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Logs;
+using Domain.Enums;
 using System.Net;
 
 namespace Domain.Factories
 {
     public static class LogFactory
     {
-        /// <summary>
-        /// Creates a system log representing a successful backup operation.
-        /// </summary>
-        public static Log CreateBackupSuccess()
+        public static Log CreateBackupSuccess() => new()
         {
-            return new Log
-            {
-                LogTypeId = 2, // System Logs
-                Action = "System Backup",
-                Description = "Automated system backup completed successfully.",
-                IpAddress = GetLocalIpAddress(),
-                EventDate = DateTime.UtcNow,
-                ActionSuccess = true
-            };
-        }
+            LogTypeId = (int)LogTypes.System,
+            Action = "System Backup",
+            Description = "Automated system backup completed successfully.",
+            IpAddress = GetLocalIpAddress(),
+            EventDate = DateTime.UtcNow,
+            ActionSuccess = true
+        };
 
-        /// <summary>
-        /// Creates a system log representing a failed backup operation.
-        /// </summary>
-        public static Log CreateBackupFailure(string errorMessage)
+        public static Log CreateBackupFailure(string errorMessage) => new()
         {
-            return new Log
-            {
-                LogTypeId = 2, // System Logs
-                Action = "System Backup (Failed)",
-                Description = $"Backup process failed: {errorMessage}",
-                IpAddress = GetLocalIpAddress(),
-                EventDate = DateTime.UtcNow,
-                ActionSuccess = false
-            };
-        }
+            LogTypeId = (int)LogTypes.System,
+            Action = "System Backup (Failed)",
+            Description = $"Backup process failed: {errorMessage}",
+            IpAddress = GetLocalIpAddress(),
+            EventDate = DateTime.UtcNow,
+            ActionSuccess = false
+        };
 
-        /// <summary>
-        /// Creates a log representing a successful user profile update.
-        /// </summary>
-        public static Log CreateUserProfileUpdateSuccess(ApplicationUser user, string? ipAddress)
+        public static Log CreateUserProfileUpdateSuccess(ApplicationUser user, string? ipAddress) => new()
         {
-            return new Log
-            {
-                LogTypeId = 1,
-                UserId = user.Id,
-                Action = "User profile updated successfully",
-                Description = $"User {user.Email} updated their profile information.",
-                EventDate = DateTime.UtcNow,
-                IpAddress = ipAddress,
-                ActionSuccess = true
-            };
-        }
+            LogTypeId = (int)LogTypes.User,
+            UserId = user.Id,
+            Action = "User profile updated successfully",
+            Description = $"User {user.Email} updated their profile information.",
+            EventDate = DateTime.UtcNow,
+            IpAddress = ipAddress,
+            ActionSuccess = true
+        };
 
-        /// <summary>
-        /// Creates a log representing a failed user profile update.
-        /// </summary>
-        public static Log CreateUserProfileUpdateFailure(ApplicationUser user, string? ipAddress, string? message)
+        public static Log CreateUserProfileUpdateFailure(ApplicationUser user, string? ipAddress, string? message) => new()
         {
-            return new Log
+            LogTypeId = (int)LogTypes.User,
+            UserId = user.Id,
+            Action = "User profile update failed",
+            Description = $"User {user.Email} could not update their profile information. {message}",
+            EventDate = DateTime.UtcNow,
+            IpAddress = ipAddress,
+            ActionSuccess = false
+        };
+
+        public static Log CreateSuccess(LogTypes type, string action, string message, string? userId = null, string? ip = null)
+            => new Log
             {
-                LogTypeId = 1,
-                UserId = user.Id,
-                Action = "User profile update failed",
-                Description = $"User {user.Email} could not update their profile information. {message}",
-                EventDate = DateTime.UtcNow,
-                IpAddress = ipAddress,
-                ActionSuccess = false
+                Action = action,
+                LogTypeId = (int)type,
+                Description = message,
+                ActionSuccess = true,
+                UserId = userId,
+                IpAddress = ip,
+                EventDate = DateTime.UtcNow
             };
-        }
+
+        public static Log CreateFailure(LogTypes type, string action, string error, string? userId = null, string? ip = null)
+            => new Log
+            {
+                Action = action,
+                LogTypeId = (int)type,
+                Description = error,
+                ActionSuccess = false,
+                UserId = userId,
+                IpAddress = ip,
+                EventDate = DateTime.UtcNow
+            };
 
         /// <summary>
         /// Helper method to resolve local IPv4 address (best effort).
