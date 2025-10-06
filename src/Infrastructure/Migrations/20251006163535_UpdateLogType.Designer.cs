@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251006163535_UpdateLogType")]
+    partial class UpdateLogType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +139,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("Domain.Entities.Logs.LogType", b =>
@@ -168,7 +171,41 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogTypesSet", (string)null);
+                    b.ToTable("LogTypesSet");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 10, 5, 19, 41, 32, 0, DateTimeKind.Utc),
+                            Description = "Logs related to user actions and interactions.",
+                            IsActive = true,
+                            Name = "User Logs"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 10, 5, 19, 41, 32, 0, DateTimeKind.Utc),
+                            Description = "Logs related to system operations and background tasks.",
+                            IsActive = true,
+                            Name = "System Logs"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 10, 5, 19, 41, 32, 0, DateTimeKind.Utc),
+                            Description = "Logs related to authentication, authorization, and access control.",
+                            IsActive = true,
+                            Name = "Security Logs"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 10, 5, 19, 41, 32, 0, DateTimeKind.Utc),
+                            Description = "Logs related to external integrations and API interactions.",
+                            IsActive = true,
+                            Name = "Integration Logs"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
