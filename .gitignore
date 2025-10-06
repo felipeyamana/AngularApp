@@ -69,3 +69,5 @@ nunit-*.xml
 # Allow Application logs folder (contains source code, not runtime logs)
 !src/Application/Logs/
 !src/Application/Logs/**
+!AngularApp/src/app/pages/logs/
+!AngularApp/src/app/pages/logs/**
