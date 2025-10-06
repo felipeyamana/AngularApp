@@ -18,6 +18,7 @@ namespace AngularApp
             builder.Services.AddRazorPages();
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddCorsPolicies();
+            builder.Services.AddHttpContextAccessor();
 
             //if (!builder.Environment.IsDevelopment())
             //{

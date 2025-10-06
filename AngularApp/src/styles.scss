@@ -57,3 +57,37 @@ body.compact {
     margin-bottom: 0.75rem;
   }
 }
+
+/* Base pagination style */
+.pagination {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Text colors for dark/light themes */
+[data-bs-theme='dark'] .pagination .page-link {
+  background-color: #222;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+[data-bs-theme='dark'] .pagination .page-item.active .page-link {
+  background-color: #0d6efd; /* Bootstrap primary */
+  border-color: #0d6efd;
+  color: #fff;
+}
+
+[data-bs-theme='dark'] .pagination .page-link:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Light mode (optional, overrides Bootstrap defaults slightly) */
+[data-bs-theme='light'] .pagination .page-link {
+  background-color: #fff;
+  border-color: #dee2e6;
+  color: #212529;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
