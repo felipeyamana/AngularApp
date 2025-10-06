@@ -9,7 +9,7 @@
       <div *ngIf="totalItems > 0" class="text-muted small">
         Showing
         {{ (page - 1) * itemsPerPage + 1 }}
-        –
+        -
         {{
         Math.min(page * itemsPerPage, totalItems)
         }}
@@ -34,7 +34,7 @@
     No logs found.
   </div>
 
-  <div *ngIf="logs.length > 0">
+  <div *ngIf="logs.length > 0" class="text-center" [class.loading-table]="loading">
     <table class="table table-hover table-striped rounded-table">
       <thead class="table-light">
         <tr>
@@ -48,7 +48,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let log of logs">
+        <tr *ngFor="let log of logs | paginate: {currentPage: page,totalItems: totalItems,itemsPerPage: itemsPerPage}">
           <td>{{ log.id }}</td>
           <td>{{ log.logTypeName }}</td>
           <td>{{ log.userFullName }}</td>
@@ -65,8 +65,8 @@
       </tbody>
     </table>
 
-    <pagination-controls *ngIf="totalItems > itemsPerPage" (pageChange)="onPageChange($event)" [responsive]="true"
-      previousLabel="‹ Prev" nextLabel="Next ›">
+    <pagination-controls (pageChange)="onPageChange($event)" [responsive]="true"
+      previousLabel="Prev" nextLabel="Next">
     </pagination-controls>
   </div>
 </div>
