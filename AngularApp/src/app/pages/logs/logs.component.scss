@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.container {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+/* Table wrapper */
+.table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+  border: 1px solid var(--bs-border-color, #e1e4e8);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background-color: var(--bs-table-bg, #fff);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  color: var(--bs-body-color);
+}
+
+/* Header */
+.table thead {
+  background-color: #f6f8fa;
+  color: #24292f;
+  border-bottom: 1px solid var(--bs-border-color, #e1e4e8);
+}
+
+[data-bs-theme='dark'] .table thead {
+  background-color: #2b3035; /* dark header tone */
+  color: #e2e6ea;
+}
+
+/* Table cells */
+.table td,
+.table th {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  color: inherit;
+}
+
+/* Hover */
+.table tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(108, 117, 125, 0.1);
+}
+
+/* Icons */
+.table i.fa-check-circle {
+  color: #28a745;
+}
+
+.table i.fa-times-circle {
+  color: #dc3545;
+}
+
+[data-bs-theme='dark'] .table i.fa-check-circle {
+  color: #3ddc84;
+}
+
+[data-bs-theme='dark'] .table i.fa-times-circle {
+  color: #ff6b6b;
+}
+
+/* Buttons */
+.btn-group .btn {
+  border-radius: 0.4rem;
+}
+
+.btn-group .btn:not(:last-child) {
+  margin-right: 0.25rem;
+}
+
+.text-muted.small {
+  font-size: 0.85rem;
+  color: var(--bs-secondary-color, #6c757d);
+}
