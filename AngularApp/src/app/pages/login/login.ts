@@ -14,30 +14,34 @@ import { UserService } from '../../services/user.service';
   styleUrl: 'login.scss'
 })
 export class Login implements OnInit {
+  // shared fields
   email: string = '';
   password: string = '';
   successMessage: string = '';
   errorMessage: string = '';
-  private returnUrl: string = '/dashboard'; // default fallback
+  isLoading: boolean = false;
+  isRegisterMode: boolean = false;
 
-  private apiUrl = `${environment.apiUrl}/auth/login`;
+  // registration form fields
+  firstName: string = '';
+  lastName: string = '';
+
+  private returnUrl: string = '/dashboard'; // default fallback
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
     private userService: UserService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    console.log('something on init');
+    console.log('Login component initialized');
   }
 
-  isLoading: boolean = false;
-
-  onSubmit(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+  onSubmitLogin(): void {
+    this.resetMessages();
     this.isLoading = true;
 
     if (!this.email || !this.password) {
@@ -46,7 +50,7 @@ export class Login implements OnInit {
       return;
     }
 
-    this.http.post<{ token: string }>(this.apiUrl, {
+    this.http.post<{ token: string }>(`${this.apiUrl}/login`, {
       email: this.email,
       password: this.password
     }).subscribe({
@@ -68,4 +72,52 @@ export class Login implements OnInit {
     });
   }
 
+  onSubmitRegister(): void {
+    this.resetMessages();
+    this.isLoading = true;
+
+    if (!this.firstName || !this.lastName || !this.email || !this.password) {
+      this.errorMessage = 'All fields are required!';
+      this.isLoading = false;
+      return;
+    }
+
+    const payload = {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      password: this.password
+    };
+
+    this.http.post(`${this.apiUrl}/register`, payload).subscribe({
+      next: () => {
+        this.successMessage = 'Account created successfully! You can now log in.';
+        this.isLoading = false;
+        this.isRegisterMode = false;
+        this.clearForm();
+      },
+      error: (err) => {
+        console.log(err);
+        this.errorMessage = err.error?.errors?.[0] || 'Registration failed.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onGoogleLogin(): void {
+    console.log('[GoogleLogin] Not implemented yet.');
+  }
+
+  // --- Helpers ---
+  private resetMessages(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
+
+  private clearForm(): void {
+    this.firstName = '';
+    this.lastName = '';
+    this.email = '';
+    this.password = '';
+  }
 }

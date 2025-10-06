@@ -1,45 +1,144 @@
-/* login.component.css */
+/* login.component.scss */
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background-color: #f0f2f5;
+  padding: 20px;
 }
 
 .login-card {
-  background-color: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 40px 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  transition: all 0.3s ease;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .toggle-section {
+    text-align: center;
+    margin-bottom: 20px;
+
+    button {
+      background: none;
+      border: none;
+      color: #007bff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #0056b3;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        outline: none;
+      }
+    }
+
+    small.text-danger {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #dc3545;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &.btn-primary {
+      background-color: #007bff;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+
+    &.btn-success {
+      background-color: #28a745;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+
+    &.btn-link {
+      background: none;
+      color: #007bff;
+      text-decoration: none;
+    }
+  }
+
+  .spinner-border {
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  .error,
+  .success {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 16px;
+  }
+
+  .error {
+    color: #dc3545;
+  }
+
+  .success {
+    color: #28a745;
+  }
 }
 
-.login-card h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input[type="email"],
-.form-group input[type="password"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
+/* Optional: subtle overlay when loading (for full-page actions) */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -53,17 +152,57 @@
   z-index: 1050;
 }
 
-button {
-  width: 100%;
+/* Google Sign-In Button (visible on white backgrounds) */
+.btn-google {
+  background-color: #ffffff;
+  color: #555 !important;
+  border: 2px solid #dadce0 !important;
+  font-weight: 500;
   padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    color: #ea4335; /* Google red G */
+    font-size: 18px;
+    margin-right: 8px;
+  }
+
+  &:hover {
+    background-color: #f7f7f7;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.98);
+    background-color: #f0f0f0;
+  }
 }
 
-button:hover {
-  background-color: #0056b3;
+/* Divider line between Google and email login */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  margin: 15px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+  }
+
+  &::before {
+    margin-right: 0.75em;
+  }
+
+  &::after {
+    margin-left: 0.75em;
+  }
 }
