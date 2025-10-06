@@ -15,13 +15,15 @@ namespace AngularApp.Controllers
             _queryDispatcher = queryDispatcher;
         }
         [HttpGet]
-        public async Task<IActionResult> GetLogs([FromQuery] bool? success, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetLogs([FromQuery] bool? success, [FromQuery] int? page,
+            CancellationToken cancellationToken)
         {
             var request = new LogRequest
             {
-
+                Success = success,
+                Page = page
             };
-            var result = await _queryDispatcher.Dispatch<LogRequest, Result<List<LogResponse>>>(request, cancellationToken);
+            var result = await _queryDispatcher.Dispatch<LogRequest, Result<LogResponse>>(request, cancellationToken);
 
             if (result.Success && result.Value != null) return Ok(result.Value);
 

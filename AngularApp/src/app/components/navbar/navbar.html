@@ -1,182 +1,112 @@
-<!-- Navbar-->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm">
   <div class="container-fluid justify-content-between">
-    <!-- Left elements -->
-    <div class="d-flex">
-      <!-- Brand -->
-      <a class="navbar-brand me-2 mb-1 d-flex align-items-center" href="#">
-        <img
-          src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.webp"
-          height="20"
-          alt=""
-          loading="lazy"
-          style="margin-top: 2px;"
-        />
+    <!-- Left -->
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand me-2 d-flex align-items-center" href="#">
+        <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.webp" height="20" alt="Logo" loading="lazy"
+          style="margin-top: 2px;" />
       </a>
 
-      <!-- Search form -->
+      <!-- Search -->
       <form class="input-group w-auto my-auto d-none d-sm-flex">
-        <input
-          autocomplete="off"
-          type="search"
-          class="form-control rounded"
-          placeholder="Search"
-          style="min-width: 125px;"
-        />
-        <span class="input-group-text border-0 d-none d-lg-flex"
-          ><i class="fas fa-search"></i
-        ></span>
+        <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search"
+          style="min-width: 125px;" />
+        <span class="input-group-text border-0 d-none d-lg-flex">
+          <i class="fas fa-search"></i>
+        </span>
       </form>
     </div>
-    <!-- Left elements -->
 
-    <!-- Center elements -->
+    <!-- Center -->
     <ul class="navbar-nav flex-row d-none d-md-flex">
-      <li class="nav-item me-3 me-lg-1 active">
+      <li class="nav-item me-3">
         <a class="nav-link" href="#">
-          <span><i class="fas fa-home fa-lg"></i></span>
-          <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          <i class="fas fa-home fa-lg"></i>
+          <span class="badge rounded-pill bg-danger">1</span>
         </a>
       </li>
-
-      <li class="nav-item me-3 me-lg-1">
-        <a class="nav-link" href="#">
-          <span><i class="fas fa-flag fa-lg"></i></span>
-        </a>
+      <li class="nav-item me-3">
+        <a class="nav-link" href="#"><i class="fas fa-flag fa-lg"></i></a>
       </li>
-
-      <li class="nav-item me-3 me-lg-1">
+      <li class="nav-item me-3">
         <a class="nav-link" role="button" ngbTooltip="View Logs" (click)="onLogsClick($event)">
           <i class="fas fa-file-alt fa-lg"></i>
         </a>
       </li>
-
-      <li class="nav-item me-3 me-lg-1">
-        <a class="nav-link" href="#">
-          <span><i class="fas fa-shopping-bag fa-lg"></i></span>
-        </a>
+      <li class="nav-item me-3">
+        <a class="nav-link" href="#"><i class="fas fa-shopping-bag fa-lg"></i></a>
       </li>
-
-      <li class="nav-item me-3 me-lg-1">
+      <li class="nav-item me-3">
         <a class="nav-link" href="#">
-          <span><i class="fas fa-users fa-lg"></i></span>
-          <span class="badge rounded-pill badge-notification bg-danger">2</span>
+          <i class="fas fa-users fa-lg"></i>
+          <span class="badge rounded-pill bg-danger">2</span>
         </a>
       </li>
     </ul>
-    <!-- Center elements -->
 
-    <!-- Right elements -->
-    <ul class="navbar-nav flex-row">
-      <li class="nav-item dropdown me-3 me-lg-1">
-        <a class="nav-link dropdown-toggle d-sm-flex align-items-sm-center" href="#" id="userDropdown" role="button"
-          data-bs-toggle="dropdown" aria-expanded="false">
+    <!-- Right -->
+    <ul class="navbar-nav flex-row align-items-center">
+      <!-- User dropdown -->
+      <li ngbDropdown class="nav-item dropdown me-3">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle d-flex align-items-center" id="userDropdown" role="button">
           <img src="https://mdbootstrap.com/img/new/avatars/1.webp" class="rounded-circle" height="22" alt="User avatar"
             loading="lazy" />
           <strong class="d-none d-sm-block ms-1">
             {{ (currentUser$ | async)?.firstName || 'Guest' }}
           </strong>
         </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-          <li>
-            <button class="dropdown-item" (click)="onLogout()">Logout</button>
-          </li>
-          <li>
-            <button class="dropdown-item" (click)="onProfileClick()">Profile</button>
-          </li>
+        <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          <li><button class="dropdown-item" (click)="onProfileClick()">Profile</button></li>
+          <li><button class="dropdown-item" (click)="onLogout()">Logout</button></li>
         </ul>
       </li>
-      <li class="nav-item me-3 me-lg-1">
-        <a class="nav-link" href="javascript:void(0)" (click)="onSettingsClick()" data-bs-toggle="tooltip"
-          data-bs-placement="bottom" title="Settings">
-          <span><i class="fas fa-cog fa-lg"></i></span>
-        </a>
-      </li>
-      <li mdbDropdown class="nav-item dropdown me-3 me-lg-1">
-        <a
-          class="nav-link dropdown-toggle hidden-arrow"
-          href="#"
-          id="navbarDropdownMenuLink"
-          role="button"
-          mdbDropdownToggle
-          aria-expanded="false"
-        >
-          <i class="fas fa-comments fa-lg"></i>
 
-          <span class="badge rounded-pill badge-notification bg-danger">6</span>
+      <!-- Settings -->
+      <li class="nav-item me-3">
+        <a class="nav-link" href="javascript:void(0)" (click)="onSettingsClick()" ngbTooltip="Settings"
+          placement="bottom">
+          <i class="fas fa-cog fa-lg"></i>
         </a>
-        <ul
-          mdbDropdownMenu
-          class="dropdown-menu dropdown-menu-end"
-          aria-labelledby="navbarDropdownMenuLink"
-        >
-          <li>
-            <a class="dropdown-item" href="#">Some news</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">Another news</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </li>
+      </li>
+
+      <!-- Messages dropdown -->
+      <li ngbDropdown class="nav-item dropdown me-3">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" id="messagesDropdown">
+          <i class="fas fa-comments fa-lg"></i>
+          <span class="badge rounded-pill bg-danger">6</span>
+        </a>
+        <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end" aria-labelledby="messagesDropdown">
+          <li><a class="dropdown-item" href="#">Some news</a></li>
+          <li><a class="dropdown-item" href="#">Another news</a></li>
+          <li><a class="dropdown-item" href="#">Something else here</a></li>
         </ul>
       </li>
-      <li mdbDropdown class="nav-item dropdown me-3 me-lg-1">
-        <a
-          class="nav-link dropdown-toggle hidden-arrow"
-          href="#"
-          id="navbarDropdownMenuLink"
-          role="button"
-          mdbDropdownToggle
-          aria-expanded="false"
-        >
+
+      <!-- Notifications dropdown -->
+      <li ngbDropdown class="nav-item dropdown me-3">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" id="notificationsDropdown">
           <i class="fas fa-bell fa-lg"></i>
-          <span class="badge rounded-pill badge-notification bg-danger">12</span>
+          <span class="badge rounded-pill bg-danger">12</span>
         </a>
-        <ul
-          mdbDropdownMenu
-          class="dropdown-menu dropdown-menu-end"
-          aria-labelledby="navbarDropdownMenuLink"
-        >
-          <li>
-            <a class="dropdown-item" href="#">Some news</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">Another news</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </li>
+        <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+          <li><a class="dropdown-item" href="#">Some alert</a></li>
+          <li><a class="dropdown-item" href="#">Another alert</a></li>
+          <li><a class="dropdown-item" href="#">Something else here</a></li>
         </ul>
       </li>
-      <li mdbDropdown class="nav-item dropdown me-3 me-lg-1">
-        <a
-          class="nav-link dropdown-toggle hidden-arrow"
-          href="#"
-          id="navbarDropdownMenuLink"
-          role="button"
-          mdbDropdownToggle
-          aria-expanded="false"
-        >
+
+      <!-- Misc dropdown -->
+      <li ngbDropdown class="nav-item dropdown me-3">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" id="miscDropdown">
           <i class="fas fa-chevron-circle-down fa-lg"></i>
         </a>
-        <ul
-          mdbDropdownMenu
-          class="dropdown-menu dropdown-menu-end"
-          aria-labelledby="navbarDropdownMenuLink"
-        >
-          <li>
-            <a class="dropdown-item" href="#">Some news</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">Another news</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </li>
+        <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end" aria-labelledby="miscDropdown">
+          <li><a class="dropdown-item" href="#">Some news</a></li>
+          <li><a class="dropdown-item" href="#">Another news</a></li>
+          <li><a class="dropdown-item" href="#">Something else here</a></li>
         </ul>
       </li>
     </ul>
-    <!-- Right elements -->
   </div>
 </nav>

@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, AsyncPipe, NgIf, NgbTooltipModule],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe, NgIf, NgbTooltipModule, NgbDropdownModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })

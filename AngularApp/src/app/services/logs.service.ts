@@ -14,14 +14,25 @@ export interface Log {
   actionSuccess?: boolean;
 }
 
+export interface PagedLogsResponse {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: Log[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class LogsService {
   private apiUrl = `${environment.apiUrl}/logs`;
 
   constructor(private http: HttpClient) {}
 
-  getLogs(success?: boolean): Observable<Log[]> {
-    const url = success !== undefined ? `${this.apiUrl}?success=${success}` : this.apiUrl;
-    return this.http.get<Log[]>(url);
+  getLogs(page = 1, success?: boolean): Observable<PagedLogsResponse | Log[]> {
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    if (success !== undefined) params.append('success', String(success));
+
+    const url = `${this.apiUrl}?${params.toString()}`;
+    return this.http.get<PagedLogsResponse | Log[]>(url);
   }
 }

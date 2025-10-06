@@ -65,3 +65,7 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Allow Application logs folder (contains source code, not runtime logs)
+!src/Application/Logs/
+!src/Application/Logs/**
