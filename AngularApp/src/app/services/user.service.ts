@@ -20,7 +20,7 @@ export class UserService {
 
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   loadCurrentUser(options?: { forceRefresh?: boolean }): Observable<User | null> {
     if (!options?.forceRefresh && this.currentUserSubject.value) {
@@ -72,6 +72,50 @@ export class UserService {
       catchError(err => {
         console.error('[UserService] updateUser failed', err);
         throw err;
+      })
+    );
+  }
+
+  getUserRoles(userId: string) {
+    const endpoint = `${this.apiUrl}/${userId}/roles`;
+    return from(
+      fetch(endpoint, {
+        method: 'GET',
+        credentials: 'include'
+      }).then(async response => {
+        if (!response.ok) throw new Error(`[UserService] HTTP ${response.status}`);
+        return (await response.json()) as string[];
+      })
+    ).pipe(
+      catchError(err => {
+        console.error('[UserService] getUserRoles failed', err);
+        return of([]);
+      })
+    );
+  }
+
+  addUserRole(userId: string, roleName: string) {
+    const endpoint = `${this.apiUrl}/${userId}/roles/${roleName}`;
+    return from(
+      fetch(endpoint, {
+        method: 'POST',
+        credentials: 'include'
+      }).then(async response => {
+        if (!response.ok) throw new Error(`[UserService] addUserRole failed: ${response.status}`);
+        return true;
+      })
+    );
+  }
+
+  removeUserRole(userId: string, roleName: string) {
+    const endpoint = `${this.apiUrl}/${userId}/roles/${roleName}`;
+    return from(
+      fetch(endpoint, {
+        method: 'DELETE',
+        credentials: 'include'
+      }).then(async response => {
+        if (!response.ok) throw new Error(`[UserService] removeUserRole failed: ${response.status}`);
+        return true;
       })
     );
   }
