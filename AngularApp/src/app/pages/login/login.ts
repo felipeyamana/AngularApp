@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { UserService } from '../../services/user.service';
 
+declare var google: any;
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -13,6 +15,7 @@ import { UserService } from '../../services/user.service';
   templateUrl: 'login.html',
   styleUrl: 'login.scss'
 })
+
 export class Login implements OnInit {
   // shared fields
   email: string = '';
@@ -38,7 +41,30 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     console.log('Login component initialized');
+
+    this.waitForGoogle()
+      .then((google) => {
+        console.log('Google SDK ready');
+
+        google.accounts.id.initialize({
+          client_id: environment.googleClientId,
+          callback: (response: any) => this.handleCredentialResponse(response)
+        });
+
+        google.accounts.id.renderButton(
+          document.getElementById('googleBtn'),
+          {
+            theme: 'outline',
+            size: 'large',
+            width: '500'
+          }
+        );
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
+
 
   onSubmitLogin(): void {
     this.resetMessages();
@@ -105,7 +131,66 @@ export class Login implements OnInit {
   }
 
   onGoogleLogin(): void {
-    console.log('[GoogleLogin] Not implemented yet.');
+    console.log('starting google login');
+    google.accounts.id.prompt();
+  }
+
+  private handleCredentialResponse(response: any): void {
+    if (!response?.credential) {
+      console.error('No Google credential returned');
+      return;
+    }
+
+    this.resetMessages();
+    this.isLoading = true;
+
+    this.loginWithGoogle(response.credential);
+  }
+
+  private loginWithGoogle(idToken: string): void {
+    this.http.post<{ token: string }>(
+      `${this.apiUrl}/google`,
+      { token: idToken }
+    ).subscribe({
+      next: (response) => {
+        this.successMessage = 'Login successful';
+
+        console.log('[GoogleLogin] Got token:', response.token);
+
+        this.userService.loadCurrentUser().subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.router.navigate([this.returnUrl]);
+          },
+          error: () => {
+            this.errorMessage = 'Failed to load user profile';
+            this.isLoading = false;
+          }
+        });
+      },
+      error: (err) => {
+        this.errorMessage =
+          err.error?.errors?.[0] || 'Google login failed.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+  private waitForGoogle(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        if ((window as any).google?.accounts?.id) {
+          clearInterval(interval);
+          resolve((window as any).google);
+        }
+      }, 50);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        reject('Google Identity Services failed to load');
+      }, 5000);
+    });
   }
 
   // --- Helpers ---
