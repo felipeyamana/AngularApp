@@ -1,3 +1,4 @@
+using AngularApp.Realtime.Hubs;
 using Application;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Infrastructure;
@@ -20,6 +21,7 @@ namespace AngularApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddRealTime();
             builder.Services.AddCorsPolicies();
             builder.Services.AddHttpContextAccessor();
 
@@ -51,6 +53,9 @@ namespace AngularApp
             {
                 app.UseCors("AllowAngularDev");
             }
+
+            app.UseCors("SignalRCors");
+            app.MapHub<NotificationHub>("/hubs/notifications");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
