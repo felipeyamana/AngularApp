@@ -1,4 +1,5 @@
-﻿using Application.Auth.Dtos;
+﻿using AngularApp.Realtime.Publishers;
+using Application.Auth.Dtos;
 using Application.Common.Attributes;
 using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Results;
@@ -18,14 +19,17 @@ namespace AngularApp.Controllers
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IConfiguration _configuration;
+        private readonly SignalRNotificationPublisher _notificationPublisher;
         public AuthController(
             IQueryDispatcher queryDispatcher,
             ICommandDispatcher commandDispatcher,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            SignalRNotificationPublisher notificationPublisher)
         {
             _queryDispatcher = queryDispatcher;
             _commandDispatcher = commandDispatcher;
             _configuration = configuration;
+            _notificationPublisher = notificationPublisher;
         }
 
         [HttpPost("register")]
@@ -34,7 +38,13 @@ namespace AngularApp.Controllers
         {
             var result = await _commandDispatcher.Dispatch<RegisterUserRequest, Result<string>>(model, cancellationToken);
             if (result.Success)
+            {
+                await _notificationPublisher.NotifyAllUsersAsync(
+                    type: "test",
+                    payload: new { message = $"User {result.Value} has created an account!" });
+
                 return Ok(new { Message = "User registered successfully!", UserId = result.Value });
+            }
 
             return BadRequest(new { Errors = result.Errors });
         }
