@@ -15,6 +15,7 @@ export class UserProfileComponent implements OnInit {
   profileData: Partial<User> = {};  // <-- store user info
   savedProfileData: Partial<User> = {};
   isDataChanged = false;
+  activeMenu: string = 'profile';
 
   constructor(
     private userService: UserService,

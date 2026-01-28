@@ -1,3 +1,6 @@
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
+
 /* Dark/light theme adjustments */
 html, body {
   background-color: var(--bs-body-bg);
@@ -17,6 +20,40 @@ html, body {
   background-color: var(--bs-tertiary-bg);
   color: var(--bs-body-color);
   transition: background-color 0.3s, color 0.3s;
+}
+
+/* Sidebar nav link theme-aware colors */
+.sidebar .nav-link {
+  color: var(--bs-body-color);
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s, color 0.3s;
+
+  &.active,
+  &:hover {
+    background-color: var(--bs-primary);
+    color: #fff;
+  }
+
+  i {
+    width: 20px;
+  }
+}
+
+/* Dark theme adjustments for sidebar contrast */
+[data-bs-theme='dark'] .sidebar {
+  background-color: var(--bs-dark-bg-subtle, #1e1e1e);
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme='dark'] .sidebar .nav-link {
+  color: var(--bs-body-color);
+
+  &.active,
+  &:hover {
+    background-color: var(--bs-primary);
+    color: #fff;
+  }
 }
 
 [data-bs-theme="dark"] {
@@ -88,6 +125,3 @@ body.compact {
   border-color: #dee2e6;
   color: #212529;
 }
-
-/* Importing Bootstrap SCSS file. */
-@import 'bootstrap/scss/bootstrap';

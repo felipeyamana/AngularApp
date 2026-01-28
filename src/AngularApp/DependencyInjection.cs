@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AngularApp.Realtime.Publishers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -78,7 +79,24 @@ namespace AngularApp
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
+
+                // signalr
+                options.AddPolicy("SignalRCors", policy =>
+                {
+                    policy
+                        .WithOrigins("https://localhost:44307")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
             });
+
+            return services;
+        }
+        public static IServiceCollection AddRealTime(this IServiceCollection services)
+        {
+            services.AddSignalR();
+            services.AddScoped<SignalRNotificationPublisher>();
 
             return services;
         }

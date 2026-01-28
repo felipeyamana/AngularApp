@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Logs;
-using Domain.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

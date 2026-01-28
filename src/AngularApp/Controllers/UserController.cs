@@ -1,4 +1,5 @@
-﻿using Application.Common.Dispatchers.Interfaces;
+﻿using AngularApp.Realtime.Publishers;
+using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Results;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Dtos;
@@ -16,11 +17,13 @@ namespace AngularApp.Controllers
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly UserManager<ApplicationUser> _userManager;
-        public UserController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, UserManager<ApplicationUser> userManager)
+        private readonly SignalRNotificationPublisher _notificationPublisher;
+        public UserController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, UserManager<ApplicationUser> userManager, SignalRNotificationPublisher notificationPublisher)
         {
             _queryDispatcher = queryDispatcher;
             _commandDispatcher = commandDispatcher;
             _userManager = userManager;
+            _notificationPublisher = notificationPublisher;
         }
         [HttpGet("getcurrent")]
         [Authorize]
@@ -61,13 +64,20 @@ namespace AngularApp.Controllers
         {
             var result = await _commandDispatcher.Dispatch<UpdateUserRequest, Result<ApplicationUser>>(request, cancellationToken);
 
-            if (result.Success && result.Value != null) return Ok(new UserResponseDto
+            if (result.Success && result.Value != null)
             {
-                Id = result.Value.Id,
-                FirstName = result.Value.FirstName,
-                LastName = result.Value.LastName,
-                Email = result.Value.Email
-            });
+                await _notificationPublisher.NotifyAllUsersAsync(
+                    type: "test",
+                    payload: new { message = $"User {result.Value.Id} was updated" });
+
+                return Ok(new UserResponseDto
+                {
+                    Id = result.Value.Id,
+                    FirstName = result.Value.FirstName,
+                    LastName = result.Value.LastName,
+                    Email = result.Value.Email
+                });
+            }
 
             return BadRequest(new { Errors = result.Errors });
         }
