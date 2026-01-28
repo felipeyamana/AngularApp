@@ -1,5 +1,6 @@
 ﻿using AngularApp.Realtime.Publishers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -93,9 +94,12 @@ namespace AngularApp
 
             return services;
         }
-        public static IServiceCollection AddRealTime(this IServiceCollection services)
+        public static IServiceCollection AddRealTime(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSignalR();
+            services.AddSignalR().AddAzureSignalR(config =>
+            {
+                config.ConnectionString = configuration.GetConnectionString("AzureSignalRConnectionString");
+            });
             services.AddScoped<SignalRNotificationPublisher>();
 
             return services;
