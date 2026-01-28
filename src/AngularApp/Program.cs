@@ -21,7 +21,7 @@ namespace AngularApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddJwtAuthentication(builder.Configuration);
-            builder.Services.AddRealTime();
+            builder.Services.AddRealTime(builder.Configuration);
             builder.Services.AddCorsPolicies();
             builder.Services.AddHttpContextAccessor();
 
