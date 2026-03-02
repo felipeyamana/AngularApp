@@ -1,6 +1,8 @@
 ﻿using Application.Common.Dispatchers.Implementations;
 using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Interfaces;
+using Application.Users.Interfaces;
+using Application.Users.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -18,6 +20,7 @@ namespace Application
             // add dispatchers
             services.AddScoped<ICommandDispatcher, CommandDispatcher>();
             services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            services.AddScoped<IUserService, UserService>();
 
             // add CQRS handlers
             services.Scan(scan => scan

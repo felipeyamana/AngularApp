@@ -67,5 +67,10 @@ export class Navbar implements OnInit {
     event?.preventDefault();
     this.router.navigate(['/logs']);
   }
+
+  onTeamListClick(event?: Event): void {
+    event?.preventDefault();
+    this.router.navigate(['/team-list']);
+  }
 }
 

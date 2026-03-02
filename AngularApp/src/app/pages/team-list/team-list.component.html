@@ -1,0 +1,175 @@
+<app-navbar></app-navbar>
+
+<div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Team List</h1>
+            <div class="breadcrumb">
+                <span>Admin Dashboard</span>
+                <span class="sep">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </span>
+                <span>Team List</span>
+            </div>
+        </div>
+
+        <button class="btn primary">
+            <i class="fa-solid fa-plus"></i>
+            Add User
+        </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" [(ngModel)]="query" placeholder="Search user..." />
+            </div>
+
+            <div *ngIf="selectedCount > 0" class="selected">
+                <i class="fa-solid fa-check-circle"></i>
+                {{ selectedCount }} selected
+                <button (click)="clearSelection()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Department</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <ng-container *ngFor="let user of filteredUsers">
+
+                    <tr>
+                        <td>
+                            <input type="checkbox" [checked]="isSelected(user.id)"
+                                (change)="toggleSelected(user.id, $event.target.checked)" />
+                        </td>
+
+                        <td class="name-cell">
+
+                            <button class="expand" (click)="toggleExpanded(user.id)">
+                                <i class="fa-solid"
+                                    [ngClass]="expandedId === user.id ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                            </button>
+
+                            <div class="avatar">
+                                {{ initials(user.name) }}
+                            </div>
+
+                            <span>{{ user.name }}</span>
+                        </td>
+
+                        <td>{{ user.position }}</td>
+                        <td>{{ user.department }}</td>
+                        <td class="muted">
+                            <i class="fa-solid fa-envelope"></i>
+                            {{ user.email }}
+                        </td>
+                        <td class="muted">
+                            <i class="fa-solid fa-phone"></i>
+                            {{ user.phone }}
+                        </td>
+
+                        <td>
+                            <span class="status" [ngClass]="{
+                  'full': user.status === 'Full Time',
+                  'part': user.status === 'Part Time'
+                }">
+                                <i class="fa-solid" [ngClass]="user.status === 'Full Time'
+                    ? 'fa-circle-check'
+                    : 'fa-clock'"></i>
+                                {{ user.status }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <button class="icon-btn">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button class="icon-btn">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Expanded Row -->
+                    <tr *ngIf="expandedId === user.id">
+                        <td colspan="8">
+                            <div class="details">
+
+                                <div>
+                                    <label>
+                                        <i class="fa-solid fa-building"></i>
+                                        Office
+                                    </label>
+                                    <div>{{ user.officeLocation || 'N/A' }}</div>
+                                </div>
+
+                                <div>
+                                    <label>
+                                        <i class="fa-solid fa-users"></i>
+                                        Team Mates
+                                    </label>
+                                    <div>
+                                        <span class="chip" *ngFor="let mate of user.teamMates">
+                                            <i class="fa-solid fa-user"></i>
+                                            {{ mate }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label>
+                                        <i class="fa-solid fa-cake-candles"></i>
+                                        Birthday
+                                    </label>
+                                    <div>{{ user.birthday || 'N/A' }}</div>
+                                </div>
+
+                                <div>
+                                    <label>
+                                        <i class="fa-solid fa-briefcase"></i>
+                                        HR Years
+                                    </label>
+                                    <div>{{ user.hrYears || 'N/A' }}</div>
+                                </div>
+
+                                <div class="wide">
+                                    <label>
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        Address
+                                    </label>
+                                    <div>{{ user.address || 'N/A' }}</div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                </ng-container>
+            </tbody>
+        </table>
+
+    </div>
+</div>

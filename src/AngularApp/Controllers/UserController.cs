@@ -3,10 +3,12 @@ using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Results;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Dtos;
+using Application.Users.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AngularApp.Controllers
 {
@@ -14,12 +16,14 @@ namespace AngularApp.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IUserService _userService;
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignalRNotificationPublisher _notificationPublisher;
-        public UserController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, UserManager<ApplicationUser> userManager, SignalRNotificationPublisher notificationPublisher)
+        public UserController(IUserService userService, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, UserManager<ApplicationUser> userManager, SignalRNotificationPublisher notificationPublisher)
         {
+            _userService = userService;
             _queryDispatcher = queryDispatcher;
             _commandDispatcher = commandDispatcher;
             _userManager = userManager;
@@ -43,6 +47,16 @@ namespace AngularApp.Controllers
                 Email = user.Email,
                 Roles = roles
             });
+        }
+        [HttpGet("getusers")]
+        [Authorize]
+        public async Task<IActionResult> GetUsers([FromQuery] int page = 1)
+        {
+            var usersResult = await _userService.GetUsersAsync(page, pageSize: 20);
+
+            if (usersResult.Success) return Ok(usersResult.Value);
+
+            return BadRequest();
         }
         [HttpPost("logout")]
         [Authorize]

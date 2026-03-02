@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, from, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface User {
@@ -29,7 +29,7 @@ export class UserService {
     }
 
     const endpoint = `${this.apiUrl}/getcurrent`;
-
+    console.log('getting current');
     return from(
       fetch(endpoint, {
         method: 'GET',
@@ -46,6 +46,28 @@ export class UserService {
         console.log('[UserService] loadCurrentUser failed', err);
         this.currentUserSubject.next(null);
         return of(null);
+      })
+    );
+  }
+
+  getUsers(page: number = 1): Observable<User[]> {
+    const endpoint = `${this.apiUrl}/getusers?page=${page}`;
+
+    return from(
+      fetch(endpoint, {
+        method: 'GET',
+        credentials: 'include'
+      }).then(async response => {
+        if (!response.ok) {
+          throw new Error(`[UserService] getUsers HTTP ${response.status}`);
+        }
+
+        return (await response.json()) as User[];
+      })
+    ).pipe(
+      catchError(err => {
+        console.error('[UserService] getUsers failed', err);
+        return of([]);
       })
     );
   }
