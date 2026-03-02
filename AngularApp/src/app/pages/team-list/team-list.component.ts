@@ -4,6 +4,7 @@ import { Navbar } from '../../components/navbar/navbar';
 import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { UserService, User } from '../../services/user.service';
+import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 type EmploymentStatus = 'Full Time' | 'Part Time';
 
@@ -27,7 +28,7 @@ export interface TeamMember {
   selector: 'app-team-list',
   templateUrl: './team-list.component.html',
   styleUrls: ['./team-list.component.scss'],
-  imports: [CommonModule, Navbar, FormsModule],
+  imports: [CommonModule, Navbar, FormsModule, NgbTooltipModule],
 })
 export class TeamListComponent implements OnInit {
 

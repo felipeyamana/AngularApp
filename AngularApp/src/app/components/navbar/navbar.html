@@ -20,29 +20,48 @@
 
     <!-- Center -->
     <ul class="navbar-nav flex-row d-none d-md-flex">
+
+      <!-- Home -->
       <li class="nav-item me-3">
-        <a class="nav-link" href="#">
+        <button class="nav-link btn btn-link p-0 position-relative" type="button" disabled>
           <i class="fas fa-home fa-lg"></i>
-          <span class="badge rounded-pill bg-danger">1</span>
-        </a>
+          <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+            1
+          </span>
+        </button>
       </li>
+
+      <!-- Flag -->
       <li class="nav-item me-3">
-        <a class="nav-link" href="#"><i class="fas fa-flag fa-lg"></i></a>
+        <button class="nav-link btn btn-link p-0" type="button" disabled>
+          <i class="fas fa-flag fa-lg"></i>
+        </button>
       </li>
+
+      <!-- Logs -->
       <li class="nav-item me-3">
-        <a class="nav-link" role="button" ngbTooltip="View Logs" (click)="onLogsClick($event)">
+        <button class="nav-link btn btn-link p-0" type="button" ngbTooltip="View Logs" (click)="onLogsClick($event)">
           <i class="fas fa-file-alt fa-lg"></i>
-        </a>
+        </button>
       </li>
+
+      <!-- Shopping -->
       <li class="nav-item me-3">
-        <a class="nav-link" href="#"><i class="fas fa-shopping-bag fa-lg"></i></a>
+        <button class="nav-link btn btn-link p-0" type="button" disabled>
+          <i class="fas fa-shopping-bag fa-lg"></i>
+        </button>
       </li>
+
+      <!-- Users -->
       <li class="nav-item me-3">
-        <a class="nav-link" role="button" ngbTooltip="List users" (click)="onTeamListClick($event)">
+        <button class="nav-link btn btn-link p-0 position-relative" type="button" ngbTooltip="List users"
+          (click)="onTeamListClick($event)">
           <i class="fas fa-users fa-lg"></i>
-          <span class="badge rounded-pill bg-danger">2</span>
-        </a>
+          <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+          </span>
+        </button>
       </li>
+
     </ul>
 
     <!-- Right -->
