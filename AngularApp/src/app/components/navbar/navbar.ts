@@ -72,5 +72,10 @@ export class Navbar implements OnInit {
     event?.preventDefault();
     this.router.navigate(['/team-list']);
   }
+
+  onMessagesClick(event?: Event): void {
+    event?.preventDefault();
+    this.router.navigate(['/chat-page']);
+  }
 }
 

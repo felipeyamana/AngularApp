@@ -1,4 +1,6 @@
-﻿using Application.Common.Dispatchers.Implementations;
+﻿using Application.Chats.Interfaces;
+using Application.Chats.Services;
+using Application.Common.Dispatchers.Implementations;
 using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Interfaces;
 using Application.Users.Interfaces;
@@ -21,6 +23,7 @@ namespace Application
             services.AddScoped<ICommandDispatcher, CommandDispatcher>();
             services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IChatService, ChatService>();
 
             // add CQRS handlers
             services.Scan(scan => scan

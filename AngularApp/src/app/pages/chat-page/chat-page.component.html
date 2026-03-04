@@ -1,0 +1,80 @@
+<app-navbar></app-navbar>
+
+<div class="chat-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="chat-sidebar">
+
+        <div class="sidebar-header">
+            Messages
+        </div>
+
+        <div class="chat-list">
+
+            <div class="chat-item" *ngFor="let chat of chats" (click)="selectChat(chat)"
+                [class.active]="selectedChat?.id === chat.id">
+
+                <div class="avatar">
+                    {{ chat.name[0] }}
+                </div>
+
+                <div class="chat-info">
+                    <div class="chat-name">
+                        {{ chat.name }}
+                    </div>
+
+                    <div class="chat-preview">
+                        {{ chat.lastMessage }}
+                    </div>
+                </div>
+
+                <div class="chat-time">
+                    {{ chat.time }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CENTER CHAT AREA -->
+    <div class="chat-content">
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" *ngIf="!selectedChat">
+            Select a chat to start messaging
+        </div>
+
+        <!-- CHAT WINDOW -->
+        <div *ngIf="selectedChat" class="chat-window">
+
+            <div class="chat-header">
+                {{ selectedChat.name }}
+            </div>
+
+            <div class="chat-messages">
+
+                <div *ngFor="let message of messages" class="message" [class.mine]="message.isMine">
+
+                    <div class="bubble">
+                        {{ message.content }}
+                    </div>
+
+                    <div class="time">
+                        {{ message.time }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="chat-input">
+                <input placeholder="Type a message..." />
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

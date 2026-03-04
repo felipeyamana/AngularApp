@@ -8,6 +8,7 @@ import { Unauthorized } from './pages/unauthorized/unauthorized';
 import { SettingsComponent } from './settings/settings.component';
 import { LogsComponent } from './pages/logs/logs.component';
 import { TeamListComponent } from './pages/team-list/team-list.component';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate:[loginGuard] },
@@ -27,5 +28,6 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'logs', component: LogsComponent},
   { path: 'team-list', component: TeamListComponent},
+  { path: 'chat-page', component: ChatPageComponent},
   { path: 'unauthorized', component: Unauthorized }
 ];

@@ -1,6 +1,6 @@
 ﻿using AngularApp.Realtime.Publishers;
+using Application.Chats.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -101,6 +101,7 @@ namespace AngularApp
                 config.ConnectionString = configuration.GetConnectionString("AzureSignalRConnectionString");
             });
             services.AddScoped<SignalRNotificationPublisher>();
+            services.AddScoped<IChatRealTimePublisher, SignalRChatPublisher>();
 
             return services;
         }

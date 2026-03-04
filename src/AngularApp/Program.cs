@@ -1,6 +1,5 @@
 using AngularApp.Realtime.Hubs;
 using Application;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Seeds;
@@ -62,7 +61,8 @@ namespace AngularApp
 
             app.UseCors("SignalRCors");
             app.MapHub<NotificationHub>("/hubs/notifications");
-          
+            app.MapHub<ChatHub>("/hubs/chat");
+
             app.UseStaticFiles();
             app.UseRouting();
 

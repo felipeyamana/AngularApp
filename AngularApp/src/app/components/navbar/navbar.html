@@ -92,10 +92,10 @@
 
       <!-- Messages dropdown -->
       <li ngbDropdown class="nav-item dropdown me-3">
-        <a ngbDropdownToggle class="nav-link dropdown-toggle" id="messagesDropdown">
+        <button ngbDropdownToggle class="nav-link dropdown-toggle" ngbTooltip="Messages" id="messagesDropdown" (click)="onMessagesClick($event)">
           <i class="fas fa-comments fa-lg"></i>
-          <span class="badge rounded-pill bg-danger">6</span>
-        </a>
+          <span class="badge rounded-pill bg-danger"></span>
+        </button>
         <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end" aria-labelledby="messagesDropdown">
           <li><a class="dropdown-item" href="#">Some news</a></li>
           <li><a class="dropdown-item" href="#">Another news</a></li>
