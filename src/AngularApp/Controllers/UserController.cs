@@ -1,5 +1,6 @@
-﻿using AngularApp.Realtime.Publishers;
 using Application.Common.Dispatchers.Interfaces;
+using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Common.Results;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Dtos;
@@ -20,8 +21,8 @@ namespace AngularApp.Controllers
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignalRNotificationPublisher _notificationPublisher;
-        public UserController(IUserService userService, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, UserManager<ApplicationUser> userManager, SignalRNotificationPublisher notificationPublisher)
+        private readonly INotificationPublisher _notificationPublisher;
+        public UserController(IUserService userService, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, UserManager<ApplicationUser> userManager, INotificationPublisher notificationPublisher)
         {
             _userService = userService;
             _queryDispatcher = queryDispatcher;
@@ -80,9 +81,9 @@ namespace AngularApp.Controllers
 
             if (result.Success && result.Value != null)
             {
-                await _notificationPublisher.NotifyAllUsersAsync(
-                    type: "test",
-                    payload: new { message = $"User {result.Value.Id} was updated" });
+                await _notificationPublisher.PublishAsync(new NotificationEnvelope(
+                    Type: "test",
+                    Payload: new { message = $"User {result.Value.Id} was updated" }));
 
                 return Ok(new UserResponseDto
                 {

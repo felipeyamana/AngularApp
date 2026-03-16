@@ -1,16 +1,30 @@
-﻿using AngularApp.Realtime.Hubs;
+using AngularApp.Realtime.Hubs;
+using Application.Common.Interfaces;
 using Application.Common.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace AngularApp.Realtime.Publishers
 {
-    public class SignalRNotificationPublisher
+    public class SignalRNotificationPublisher : INotificationPublisher
     {
         private readonly IHubContext<NotificationHub> _hub;
 
         public SignalRNotificationPublisher(IHubContext<NotificationHub> hub)
         {
             _hub = hub;
+        }
+
+        public async Task PublishAsync(NotificationEnvelope message)
+        {
+            if (!string.IsNullOrWhiteSpace(message.UserId))
+            {
+                await _hub.Clients
+                    .User(message.UserId)
+                    .SendAsync("NotificationReceived", message);
+                return;
+            }
+
+            await _hub.Clients.All.SendAsync("NotificationReceived", message);
         }
 
         public async Task PublishToUserAsync(NotificationEnvelope notification)
