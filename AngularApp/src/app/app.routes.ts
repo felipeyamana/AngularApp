@@ -11,23 +11,23 @@ import { TeamListComponent } from './pages/team-list/team-list.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 
 export const routes: Routes = [
-  { path: 'login', component: Login, canActivate:[loginGuard] },
+  { path: 'login', component: Login, canActivate: [loginGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { 
-    path: 'dashboard', 
-    component: Dashboard, 
+  {
+    path: 'dashboard',
+    component: Dashboard,
     canActivate: [authGuard],
     data: { roles: ['User'] }
   },
-  { 
-    path: 'user-profile', 
-    component: UserProfileComponent, 
+  {
+    path: 'user-profile',
+    component: UserProfileComponent,
     canActivate: [authGuard],
     data: { roles: ['User'] }
   },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'logs', component: LogsComponent},
-  { path: 'team-list', component: TeamListComponent},
-  { path: 'chat-page', component: ChatPageComponent},
+  { path: 'settings', component: SettingsComponent, canActivate: [authGuard], data: { roles: ['User'] } },
+  { path: 'chat-page', component: ChatPageComponent, canActivate: [authGuard], data: { roles: ['User'] } },
+  { path: 'team-list', component: TeamListComponent, canActivate: [authGuard], data: { roles: ['Admin'] } },
+  { path: 'logs', component: LogsComponent, canActivate: [authGuard], data: { roles: ['Admin'] } },
   { path: 'unauthorized', component: Unauthorized }
 ];

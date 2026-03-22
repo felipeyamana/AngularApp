@@ -10,17 +10,25 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   return userService.loadCurrentUser().pipe(
     map(user => {
-      if (user) {
-        // user is logged in, allow navigation
-        return true;
-      } else {
-        // not logged in, redirect to login with returnUrl
+      if (!user) {
         router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
         return false;
       }
+
+      const requiredRoles = route.data?.['roles'] as string[] | undefined;
+
+      if (requiredRoles && requiredRoles.length > 0) {
+        const hasRole = user.roles.some(r => requiredRoles.includes(r));
+
+        if (!hasRole) {
+          router.navigate(['/unauthorized']);
+          return false;
+        }
+      }
+
+      return true;
     }),
-    catchError(err => {
-      console.warn('[AuthGuard] loadCurrentUser failed', err);
+    catchError(() => {
       router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
       return of(false);
     })

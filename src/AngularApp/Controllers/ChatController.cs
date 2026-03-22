@@ -8,7 +8,7 @@ namespace AngularApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
