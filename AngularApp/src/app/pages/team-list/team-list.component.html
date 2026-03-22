@@ -93,12 +93,12 @@
 
                         <td>
                             <span class="status" [ngClass]="{
-                  'full': user.status === 'Full Time',
-                  'part': user.status === 'Part Time'
-                }">
+                                'full': user.status === 'Full Time',
+                                'part': user.status === 'Part Time'
+                                }">
                                 <i class="fa-solid" [ngClass]="user.status === 'Full Time'
-                    ? 'fa-circle-check'
-                    : 'fa-clock'"></i>
+                                    ? 'fa-circle-check'
+                                    : 'fa-clock'"></i>
                                 {{ user.status }}
                             </span>
                         </td>
@@ -110,7 +110,7 @@
                             <button class="icon-btn">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
-                            <button class="icon-btn" ngbTooltip="Chat with user">
+                            <button class="icon-btn" ngbTooltip="Chat with user" (click)="openChat(user.id)">
                                 <i class="fa-solid fa-commenting"></i>
                             </button>
                         </td>

@@ -11,5 +11,7 @@ namespace Application.Chats.Interfaces
         Task<List<ChatMessageDto>> GetChatMessagesAsync(Guid chatId, int page);
 
         Task<ChatMessageDto> SendMessageAsync(Guid chatId, string senderId, string content);
+
+        Task MarkMessagesAsReadAsync(Guid chatId, string userId);
     }
 }

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { UserService, User } from '../../services/user.service';
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 type EmploymentStatus = 'Full Time' | 'Part Time';
 
@@ -39,7 +40,7 @@ export class TeamListComponent implements OnInit {
   expandedId: string | null = null;
   selected = new Set<string>();
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
     console.log('init');
@@ -60,6 +61,12 @@ export class TeamListComponent implements OnInit {
 
     const start = (this.page - 1) * this.pageSize;
     return filtered.slice(start, start + this.pageSize);
+  }
+
+  openChat(userId: string) {
+    this.router.navigate(['/chat-page'], {
+      queryParams: { userId }
+    });
   }
 
   loadUsers(): void {

@@ -6,6 +6,7 @@ import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 import { NotificationHubService } from '../../core/realtime/notification-hub.service';
 import { AppNotification } from '../../models/app-notification.model';
 import { DatePipe } from '@angular/common';
+import { ChatHubService } from '../../core/realtime/chat-hub.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,8 +17,9 @@ import { DatePipe } from '@angular/common';
 })
 export class Navbar implements OnInit {
   notifications: AppNotification[] = [];
+  unreadMessages = 0;
 
-  constructor(private router: Router, private userService: UserService, private notificationHub: NotificationHubService) {}
+  constructor(private router: Router, private userService: UserService, private notificationHub: NotificationHubService, private chatHub: ChatHubService) { }
 
   get currentUser$() {
     return this.userService.currentUser$;
@@ -29,6 +31,7 @@ export class Navbar implements OnInit {
       error: (err) => console.error('[Navbar] Error fetching user:', err)
     });
 
+    // general notifications hub (navbar icon only here)
     this.notificationHub.notifications$
       .subscribe(notification => {
         // newest on top
@@ -38,6 +41,15 @@ export class Navbar implements OnInit {
           this.notifications.pop();
         }
       });
+
+
+    // chat notifications hub (navbar icon only here)
+    this.chatHub.messages$.subscribe(message => {
+      // if user is NOT on chat page count as unread
+      if (!this.router.url.includes('/chat-page')) {
+        this.unreadMessages++;
+      }
+    });
   }
 
   get unreadCount(): number {
@@ -75,6 +87,7 @@ export class Navbar implements OnInit {
 
   onMessagesClick(event?: Event): void {
     event?.preventDefault();
+    this.unreadMessages = 0;
     this.router.navigate(['/chat-page']);
   }
 }

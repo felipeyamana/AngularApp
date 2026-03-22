@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 export interface User {
@@ -20,7 +21,19 @@ export class UserService {
 
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  get currentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  getCurrentUserCached(): Observable<User | null> {
+    if (this.currentUserSubject.value) {
+      return of(this.currentUserSubject.value);
+    }
+
+    return this.loadCurrentUser();
+  }
 
   loadCurrentUser(options?: { forceRefresh?: boolean }): Observable<User | null> {
     if (!options?.forceRefresh && this.currentUserSubject.value) {
@@ -30,17 +43,10 @@ export class UserService {
 
     const endpoint = `${this.apiUrl}/getcurrent`;
     console.log('getting current');
-    return from(
-      fetch(endpoint, {
-        method: 'GET',
-        credentials: 'include'
-      }).then(async response => {
-        if (!response.ok) {
-          throw new Error(`[UserService] HTTP ${response.status}`);
-        }
-        return (await response.json()) as User;
-      })
-    ).pipe(
+
+    return this.http.get<User>(endpoint, {
+      withCredentials: true
+    }).pipe(
       tap(user => this.currentUserSubject.next(user)),
       catchError(err => {
         console.log('[UserService] loadCurrentUser failed', err);
@@ -53,18 +59,9 @@ export class UserService {
   getUsers(page: number = 1): Observable<User[]> {
     const endpoint = `${this.apiUrl}/getusers?page=${page}`;
 
-    return from(
-      fetch(endpoint, {
-        method: 'GET',
-        credentials: 'include'
-      }).then(async response => {
-        if (!response.ok) {
-          throw new Error(`[UserService] getUsers HTTP ${response.status}`);
-        }
-
-        return (await response.json()) as User[];
-      })
-    ).pipe(
+    return this.http.get<User[]>(endpoint, {
+      withCredentials: true
+    }).pipe(
       catchError(err => {
         console.error('[UserService] getUsers failed', err);
         return of([]);
@@ -75,22 +72,15 @@ export class UserService {
   updateUser(user: { id: string; firstName: string; lastName: string; email: string }): Observable<User> {
     const endpoint = `${this.apiUrl}/updateuser`;
 
-    return from(
-      fetch(endpoint, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
-      }).then(async response => {
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({}));
-          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
+    return this.http.post<User>(endpoint, user, {
+      withCredentials: true
+    }).pipe(
+      tap(updatedUser => {
+        // update cache if it's the same user
+        if (this.currentUserSubject.value?.id === updatedUser.id) {
+          this.currentUserSubject.next(updatedUser);
         }
-        return (await response.json()) as User;
-      })
-    ).pipe(
+      }),
       catchError(err => {
         console.error('[UserService] updateUser failed', err);
         throw err;
@@ -98,17 +88,12 @@ export class UserService {
     );
   }
 
-  getUserRoles(userId: string) {
+  getUserRoles(userId: string): Observable<string[]> {
     const endpoint = `${this.apiUrl}/${userId}/roles`;
-    return from(
-      fetch(endpoint, {
-        method: 'GET',
-        credentials: 'include'
-      }).then(async response => {
-        if (!response.ok) throw new Error(`[UserService] HTTP ${response.status}`);
-        return (await response.json()) as string[];
-      })
-    ).pipe(
+
+    return this.http.get<string[]>(endpoint, {
+      withCredentials: true
+    }).pipe(
       catchError(err => {
         console.error('[UserService] getUserRoles failed', err);
         return of([]);
@@ -116,46 +101,45 @@ export class UserService {
     );
   }
 
-  addUserRole(userId: string, roleName: string) {
+  addUserRole(userId: string, roleName: string): Observable<boolean> {
     const endpoint = `${this.apiUrl}/${userId}/roles/${roleName}`;
-    return from(
-      fetch(endpoint, {
-        method: 'POST',
-        credentials: 'include'
-      }).then(async response => {
-        if (!response.ok) throw new Error(`[UserService] addUserRole failed: ${response.status}`);
-        return true;
+
+    return this.http.post<boolean>(endpoint, {}, {
+      withCredentials: true
+    }).pipe(
+      tap(() => true),
+      catchError(err => {
+        console.error('[UserService] addUserRole failed', err);
+        throw err;
       })
     );
   }
 
-  removeUserRole(userId: string, roleName: string) {
+  removeUserRole(userId: string, roleName: string): Observable<boolean> {
     const endpoint = `${this.apiUrl}/${userId}/roles/${roleName}`;
-    return from(
-      fetch(endpoint, {
-        method: 'DELETE',
-        credentials: 'include'
-      }).then(async response => {
-        if (!response.ok) throw new Error(`[UserService] removeUserRole failed: ${response.status}`);
-        return true;
+
+    return this.http.delete<boolean>(endpoint, {
+      withCredentials: true
+    }).pipe(
+      tap(() => true),
+      catchError(err => {
+        console.error('[UserService] removeUserRole failed', err);
+        throw err;
       })
     );
   }
 
   logout(): Observable<any> {
     const endpoint = `${this.apiUrl}/logout`;
-    console.log('[Auth] logout URL:', `${endpoint}`);
+    console.log('[Auth] logout URL:', endpoint);
 
-    return from(
-      fetch(endpoint, {
-        method: 'POST',
-        credentials: 'include'
-      }).then(async response => {
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({}));
-          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
-        }
-        return response.json().catch(() => ({ success: true }));
+    return this.http.post<any>(endpoint, {}, {
+      withCredentials: true
+    }).pipe(
+      tap(() => this.clearCurrentUser()),
+      catchError(err => {
+        console.error('[UserService] logout failed', err);
+        throw err;
       })
     );
   }

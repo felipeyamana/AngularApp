@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Chat;
+using Domain.Entities.Chats;
 using Domain.Entities.Logs;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace Infrastructure.Data
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatParticipant> ChatParticipants { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatMessageView> ChatMessageViews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -84,6 +86,29 @@ namespace Infrastructure.Data
 
                 // Index to optimize retrieval of chat history ordered by creation time
                 entity.HasIndex(x => new { x.ChatId, x.CreatedAt });
+            });
+
+            builder.Entity<ChatMessageView>(entity =>
+            {
+                entity.ToTable("ChatMessageView");
+
+                entity.HasKey(x => x.Id);
+
+                // Prevent duplicate views per user per message
+                entity.HasIndex(x => new { x.ChatMessageId, x.UserId })
+                      .IsUnique();
+
+                entity.HasOne(x => x.ChatMessage)
+                      .WithMany(m => m.Views)
+                      .HasForeignKey(x => x.ChatMessageId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.User)
+                      .WithMany()
+                      .HasForeignKey(x => x.UserId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasIndex(x => x.UserId);
             });
         }
     }

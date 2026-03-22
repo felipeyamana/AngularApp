@@ -8,31 +8,48 @@
         <div class="sidebar-header">
             Messages
         </div>
+        <div class="chat-list" [class.loading]="isLoadingChats">
 
-        <div class="chat-list">
+            <!-- Skeletons -->
+            <ng-container *ngIf="isLoadingChats; else chatList">
+                <div class="chat-item skeleton" *ngFor="let i of skeletons">
 
-            <div class="chat-item" *ngFor="let chat of chats" (click)="selectChat(chat)"
-                [class.active]="selectedChat?.id === chat.id">
+                    <div class="avatar skeleton-avatar"></div>
 
-                <div class="avatar">
-                    {{ chat.name[0] }}
-                </div>
-
-                <div class="chat-info">
-                    <div class="chat-name">
-                        {{ chat.name }}
+                    <div class="chat-info">
+                        <div class="chat-name skeleton-line"></div>
+                        <div class="chat-preview skeleton-line small"></div>
                     </div>
 
-                    <div class="chat-preview">
-                        {{ chat.lastMessage }}
+                    <div class="chat-time skeleton-line tiny"></div>
+
+                </div>
+            </ng-container>
+
+            <ng-template #chatList>
+                <div class="chat-item" *ngFor="let chat of chats" (click)="selectChat(chat)"
+                    [class.active]="selectedChat?.id === chat.id">
+
+                    <div class="avatar">
+                        {{ chat.name?.charAt(0) || '?' }}
                     </div>
-                </div>
 
-                <div class="chat-time">
-                    {{ chat.time }}
-                </div>
+                    <div class="chat-info">
+                        <div class="chat-name">{{ chat.name }}</div>
+                        <div class="chat-preview">{{ chat.lastMessage | slice:0:40 }}{{ (chat.lastMessage ?? '').length
+                            > 40 ? '...' : '' }}</div>
+                    </div>
 
-            </div>
+                    <div class="chat-time">
+                        {{ chat.time }}
+                    </div>
+
+                    <span *ngIf="chat.unreadCount > 0" class="chat-badge">
+                        {{ chat.unreadCount }}
+                    </span>
+
+                </div>
+            </ng-template>
 
         </div>
 
@@ -63,6 +80,18 @@
 
                     <div class="time">
                         {{ message.time }}
+
+                        <span *ngIf="message.isMine" class="status-icon">
+
+                            <i *ngIf="message.status === 'sending'" class="fa-solid fa-clock"></i>
+
+                            <i *ngIf="message.status === 'sent'" class="fa-solid fa-check"></i>
+
+                            <i *ngIf="message.status === 'read'" class="fa-solid fa-check-double read"></i>
+
+                            <i *ngIf="message.status === 'failed'" class="fa-solid fa-exclamation"></i>
+
+                        </span>
                     </div>
 
                 </div>
@@ -70,7 +99,7 @@
             </div>
 
             <div class="chat-input">
-                <input placeholder="Type a message..." />
+                <input [(ngModel)]="newMessage" placeholder="Type a message..." (keydown.enter)="sendMessage()" />
             </div>
 
         </div>

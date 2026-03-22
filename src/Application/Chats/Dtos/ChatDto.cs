@@ -3,9 +3,10 @@
     public class ChatDto
     {
         public Guid Id { get; set; }
-
-        public List<string> ParticipantIds { get; set; } = new();
-
+        public List<ChatParticipantDto> Participants { get; set; } = new();
         public DateTime CreatedAt { get; set; }
+        public string? LastMessage { get; set; }
+        public DateTime? LastMessageAt { get; set; }
+        public int UnreadCount { get; set; }
     }
 }

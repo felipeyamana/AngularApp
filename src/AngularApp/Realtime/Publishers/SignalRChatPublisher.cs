@@ -16,7 +16,18 @@ namespace AngularApp.Realtime.Publishers
 
         public async Task PublishMessageAsync(Guid chatId, ChatMessageDto message)
         {
-            await _hub.Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", message);
+            await _hub.Clients.Group(chatId.ToString())
+                .SendAsync("ReceiveMessage", message);
+        }
+
+        public async Task PublishMessagesReadAsync(Guid chatId, string userId)
+        {
+            await _hub.Clients.Group(chatId.ToString())
+                .SendAsync("MessagesRead", new
+                {
+                    chatId,
+                    userId
+                });
         }
     }
 }

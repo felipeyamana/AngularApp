@@ -1,6 +1,7 @@
 ﻿using Application.Chats.Dtos;
 using Application.Chats.Interfaces;
 using Domain.Entities.Chat;
+using Domain.Entities.Chats;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +19,23 @@ namespace Application.Chats.Services
 
         public async Task<Guid> CreateChatAsync(List<string> participantIds)
         {
+            participantIds = participantIds.Distinct().OrderBy(x => x).ToList();
+
+            var existingChat = await _context.Chats
+                .Where(c => c.Participants.Count == participantIds.Count)
+                .Where(c => c.Participants.All(p => participantIds.Contains(p.UserId)))
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
+
+            if (existingChat != Guid.Empty)
+                return existingChat;
+
+            var chatDate = DateTime.UtcNow;
+
             var chat = new Chat
             {
                 Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = chatDate,
                 CreatedByUserId = participantIds.First()
             };
 
@@ -32,7 +46,8 @@ namespace Application.Chats.Services
                 _context.ChatParticipants.Add(new ChatParticipant
                 {
                     ChatId = chat.Id,
-                    UserId = userId
+                    UserId = userId,
+                    JoinedAt = chatDate
                 });
             }
 
@@ -78,7 +93,27 @@ namespace Application.Chats.Services
                 {
                     Id = p.ChatId,
                     CreatedAt = p.Chat.CreatedAt,
-                    ParticipantIds = p.Chat.Participants.Select(x => x.UserId).ToList()
+                    Participants = p.Chat.Participants
+                        .Select(x => new ChatParticipantDto
+                        {
+                            UserId = x.UserId,
+                            Name = $"{x.User.FirstName} {x.User.LastName}".Trim()
+                        }).ToList(),
+                    LastMessage = p.Chat.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => m.Content)
+                    .FirstOrDefault(),
+
+                    LastMessageAt = p.Chat.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => (DateTime?)m.CreatedAt)
+                    .FirstOrDefault(),
+
+                    UnreadCount = p.Chat.Messages
+                    .Count(m =>
+                        m.SenderId != userId &&
+                        !m.Views.Any(v => v.UserId == userId)
+                    )
                 })
                 .AsNoTracking()
                 .ToListAsync();
@@ -99,10 +134,38 @@ namespace Application.Chats.Services
                     ChatId = m.ChatId,
                     SenderId = m.SenderId,
                     Content = m.Content,
-                    CreatedAt = m.CreatedAt
+                    CreatedAt = m.CreatedAt,
+                    IsRead = m.Views.Any()
                 })
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task MarkMessagesAsReadAsync(Guid chatId, string userId)
+        {
+            // get messages NOT sent by this user AND not yet viewed
+            var messagesToMark = await _context.ChatMessages
+                .Where(m => m.ChatId == chatId && m.SenderId != userId)
+                .Where(m => !m.Views.Any(v => v.UserId == userId))
+                .Select(m => m.Id)
+                .ToListAsync();
+
+            if (!messagesToMark.Any())
+                return;
+
+            var views = messagesToMark.Select(messageId => new ChatMessageView
+            {
+                Id = Guid.NewGuid(),
+                ChatMessageId = messageId,
+                UserId = userId,
+                ViewedAt = DateTime.UtcNow
+            });
+
+            _context.ChatMessageViews.AddRange(views);
+
+            await _context.SaveChangesAsync();
+
+            await _publisher.PublishMessagesReadAsync(chatId, userId);
         }
     }
 }
