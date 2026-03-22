@@ -1,6 +1,7 @@
-﻿using AngularApp.Realtime.Publishers;
 using Application.Auth.Dtos;
 using Application.Common.Attributes;
+using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Results;
 using Application.Users.Commands.RegisterUser;
@@ -19,12 +20,12 @@ namespace AngularApp.Controllers
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IConfiguration _configuration;
-        private readonly SignalRNotificationPublisher _notificationPublisher;
+        private readonly INotificationPublisher _notificationPublisher;
         public AuthController(
             IQueryDispatcher queryDispatcher,
             ICommandDispatcher commandDispatcher,
             IConfiguration configuration,
-            SignalRNotificationPublisher notificationPublisher)
+            INotificationPublisher notificationPublisher)
         {
             _queryDispatcher = queryDispatcher;
             _commandDispatcher = commandDispatcher;
@@ -39,9 +40,9 @@ namespace AngularApp.Controllers
             var result = await _commandDispatcher.Dispatch<RegisterUserRequest, Result<string>>(model, cancellationToken);
             if (result.Success)
             {
-                await _notificationPublisher.NotifyAllUsersAsync(
-                    type: "test",
-                    payload: new { message = $"User {result.Value} has created an account!" });
+                await _notificationPublisher.PublishAsync(new NotificationEnvelope(
+                    Type: "test",
+                    Payload: new { message = $"User {result.Value} has created an account!" }));
 
                 return Ok(new { Message = "User registered successfully!", UserId = result.Value });
             }

@@ -1,0 +1,7 @@
+**/bin
+**/obj
+**/node_modules
+AngularApp/node_modules
+AngularApp/dist
+.git
+.vs

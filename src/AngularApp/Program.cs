@@ -1,6 +1,5 @@
 using AngularApp.Realtime.Hubs;
 using Application;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Seeds;
@@ -13,6 +12,11 @@ namespace AngularApp
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(80);
+            });
 
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
@@ -41,6 +45,7 @@ namespace AngularApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseCors("AllowAngularProd");
+                //app.UseHttpsRedirection();
 
                 using (var scope = app.Services.CreateScope())
                 {
@@ -56,8 +61,8 @@ namespace AngularApp
 
             app.UseCors("SignalRCors");
             app.MapHub<NotificationHub>("/hubs/notifications");
+            app.MapHub<ChatHub>("/hubs/chat");
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
 
