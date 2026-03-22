@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 interface LoginResponse {
@@ -7,45 +9,45 @@ interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root' // makes it globally available
+  providedIn: 'root'
 })
 export class Auth {
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return from(
-      fetch(`${this.apiUrl}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password })
-      }).then(async response => {
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({}));
-          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
-        }
-        return (await response.json()) as LoginResponse;
-      })
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}/login`,
+      { email, password },
+      { withCredentials: true }
+    ).pipe(
+      catchError(this.handleError)
     );
   }
 
-  register(firstName: string, lastName: string, email: string, password: string): Observable<any> {
-    return from(
-      fetch(`${this.apiUrl}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ firstName, lastName, email, password })
-      }).then(async response => {
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({}));
-          throw new Error(error?.errors?.[0] || `HTTP ${response.status}`);
-        }
-        return response.json();
-      })
+  register(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/register`,
+      { firstName, lastName, email, password },
+      { withCredentials: true }
+    ).pipe(
+      catchError(this.handleError)
     );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    const message =
+      error.error?.errors?.[0] ||
+      error.error?.message ||
+      `HTTP ${error.status}`;
+
+    return throwError(() => new Error(message));
   }
 
   saveToken(token: string): void {
