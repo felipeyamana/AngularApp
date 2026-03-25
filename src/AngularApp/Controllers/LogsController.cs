@@ -1,12 +1,14 @@
 ﻿using Application.Common.Dispatchers.Interfaces;
 using Application.Common.Results;
 using Application.Logs.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AngularApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class LogsController : ControllerBase
     {
         private readonly IQueryDispatcher _queryDispatcher;

@@ -31,7 +31,7 @@ namespace AngularApp.Controllers
             _notificationPublisher = notificationPublisher;
         }
         [HttpGet("getcurrent")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetCurrentUser()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -50,7 +50,7 @@ namespace AngularApp.Controllers
             });
         }
         [HttpGet("getusers")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers([FromQuery] int page = 1)
         {
             var usersResult = await _userService.GetUsersAsync(page, pageSize: 20);
@@ -74,7 +74,7 @@ namespace AngularApp.Controllers
             return Ok(new { success = true, message = "Logged out successfully" });
         }
         [HttpPost("updateuser")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUser(UpdateUserRequest request, CancellationToken cancellationToken)
         {
             var result = await _commandDispatcher.Dispatch<UpdateUserRequest, Result<ApplicationUser>>(request, cancellationToken);
