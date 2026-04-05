@@ -1,29 +1,20 @@
 .unauthorized-container {
   text-align: center;
-  margin-top: 5rem;
+  max-width: 36rem;
+  margin-inline: auto;
+}
 
-  h1 {
-    font-size: 2rem;
-    color: #e74c3c;
-  }
+.unauthorized-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
 
-  p {
-    margin: 1rem 0;
-    font-size: 1.2rem;
-  }
+.unauthorized-title {
+  font-size: 2rem;
+}
 
-  button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-
-    &:hover {
-      background: #2980b9;
-    }
-  }
+.unauthorized-container p {
+  margin: 1rem 0;
+  font-size: 1.2rem;
 }
