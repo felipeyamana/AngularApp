@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
 import { AsyncPipe, NgIf, NgFor } from '@angular/common';
@@ -19,7 +19,13 @@ export class Navbar implements OnInit {
   notifications: AppNotification[] = [];
   unreadMessages = 0;
 
-  constructor(private router: Router, private userService: UserService, private notificationHub: NotificationHubService, private chatHub: ChatHubService) { }
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private notificationHub: NotificationHubService,
+    private chatHub: ChatHubService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   get currentUser$() {
     return this.userService.currentUser$;
@@ -54,6 +60,11 @@ export class Navbar implements OnInit {
 
   get unreadCount(): number {
     return this.notifications.length;
+  }
+
+  /** Ensures the menu reflects open state (ng-bootstrap open() does not markForCheck; zoneless CD needs a nudge). */
+  onDropdownOpenChange(): void {
+    this.cdr.markForCheck();
   }
 
   onLogout(event?: Event): void {
