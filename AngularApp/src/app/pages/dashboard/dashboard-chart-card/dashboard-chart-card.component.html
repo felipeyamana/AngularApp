@@ -1,0 +1,27 @@
+<div class="card h-100 shadow-sm border-0 dashboard-chart-card">
+  <div
+    class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2 bg-body-tertiary border-bottom">
+    <div class="min-w-0">
+      <h6 class="mb-0 text-truncate">{{ title }}</h6>
+      @if (summary) {
+        <small class="text-muted d-block text-truncate">{{ summary }}</small>
+      }
+    </div>
+    <select
+      class="form-select form-select-sm dashboard-chart-card__range"
+      [attr.name]="'range-' + chartKey"
+      [(ngModel)]="period"
+      (ngModelChange)="onPeriodChange()">
+      @for (opt of periodOptions; track opt.value) {
+        <option [ngValue]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+  </div>
+  <div class="card-body dashboard-chart-card__body">
+    @if (isBrowser) {
+      <canvas #canvasEl role="img" [attr.aria-label]="title"></canvas>
+    } @else {
+      <p class="text-muted small mb-0">Charts load in the browser.</p>
+    }
+  </div>
+</div>
